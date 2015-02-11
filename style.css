@@ -8,6 +8,7 @@ nav {
     height: 5%;
     width: 90%;
     margin: 0 auto;
+    background-color: black;
 }
 
 nav button {
@@ -20,9 +21,9 @@ section {
     margin: 0 auto;
     clear: both;
     width: 90%;
-    min-height: 80%;
     background-color: red;
     position: relative;
+    overflow: hidden;
 }
 
 section section {
@@ -40,15 +41,18 @@ section article {
 
 section article p {
     float: left;
+    margin-left: 60px;
+}
+
+section h1 {
     margin-left: 20px;
+    font-size: 28px;
 }
 
-h1 {
-    
-}
-
-h2 {
+section h2 {
     clear: both;
+    font-size: 20px;
+    margin-left: 40px;
 }
 
 #rightmenu {
