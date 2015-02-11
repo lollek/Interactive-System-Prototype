@@ -17,7 +17,7 @@
       background-color: transparent;
     }
     .gwd-div-2yeb {
-      position: absolute;
+      position: relative;
       height: 26px;
       font-family: 'Times New Roman';
       text-align: left;
@@ -38,29 +38,29 @@
       -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 63, 0, 1);
       -webkit-transform-style: preserve-3d;
       background-image: none;
-      background-color: green;
+      background-color: blue;
     }
     .submit {
       position: fixed;
-      bottom: 0;
+      display: inline;
       left: 50%;
       z-index: 1000;
     }
     .radio_buttons {
-      	background-color: blue;
-     	width: 40%; 
-      	float: left;
+      width: 40%;
+      float: left;
+      background-color: blue;
     }
-    .sliders {      	
-      	background-color: gray;
-      	width: 40%;
-      	float: right;
+    .sliders {
+      width: 40%;
+      float: right;
+      background-color: gray;
     }
     .sliders input {
-      	margin-top: 2%;
-     	width: 50%;
+      margin-top: 2%;
+      width: 50%;
     }
-    .float p,input {
+    .float p, input {
       float: left;
     }
     .float .clear {
@@ -73,7 +73,7 @@
       background-color: yellow;
     }
     #third_question {
-      background-color: black;
+      background-color: orange;
     }
   </style>
   <style type="text/css" id="" title="Temp" media="screen"></style>
@@ -82,7 +82,7 @@
 
 <body>
   <div class="gwd-div-2yeb" id="header">Personlighetstest</div>
-  <form method="post" class="gwd-form-hxkt gwd-new-class-lkse gwd-new-class-nnjt" id="questions" style="">
+  <form method="post" class="gwd-form-hxkt gwd-new-class-lkse gwd-new-class-nnjt" id="questions">
     <div class="radio_buttons">
       <div id="first_question">
         <legend>
@@ -95,7 +95,6 @@
         <input name="1" type="radio">
         <br>
       </div>
-      
       <div id="second_question">
         <legend>
           En fråga till?
@@ -107,7 +106,6 @@
         <input name="2" type="radio">
         <br>
       </div>
-      
       <div id="third_question">
         <legend>
           En tredje fråga?
@@ -118,38 +116,33 @@
         <br>
         <input name="3" type="radio">
         <br>
-      </div>     
+      </div>
     </div>
-    
     <div class="sliders">
-      	<div class="float">
-          <p>Natur</p>
-        	<input class="center" type="range" min="0" max="100" step="1" value="50">
-          <p>Stad</p>
-        </div>
-      
-      	<div class="float">
-          <p class="clear">Mysigt</p>
-        	<input class="center" type="range" min="0" max="100" step="1" value="50">
-          <p>Luftigt</p>
-        </div>
-      
-      	<div class="float">
-          <p class="clear">Ljust</p>
-        	<input class="center" type="range" min="0" max="100" step="1" value="50">
-          <p>Färgglatt</p>
-        </div>
-      
-      	<div class="float">
-          <p  class="clear">Små rum</p>
-        	<input class="center" type="range" min="0" max="100" step="1" value="50">
-          <p>Stora rum</p>
-        </div>
+      <div class="float">
+        <p>Natur</p>
+        <input class="center" type="range" min="0" max="100" step="1" value="50">
+        <p>Stad</p>
+      </div>
+      <div class="float">
+        <p class="clear">Mysigt</p>
+        <input class="center" type="range" min="0" max="100" step="1" value="50">
+        <p>Luftigt</p>
+      </div>
+      <div class="float">
+        <p class="clear">Ljust</p>
+        <input class="center" type="range" min="0" max="100" step="1" value="50">
+        <p>Färgglatt</p>
+      </div>
+      <div class="float">
+        <p class="clear">Små rum</p>
+        <input class="center" type="range" min="0" max="100" step="1" value="50">
+        <p>Stora rum</p>
+      </div>
     </div>
-    
     <div class="submit">
       <input type="submit" value="Klar">
-  	</div>
-  </form>
+    </div>
+  </form>  
 </body>
 </html>
