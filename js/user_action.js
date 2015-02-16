@@ -7,3 +7,10 @@ function onClick() {
     window.location.href= "/html/personality_test.html";
 }
 
+
+function goToExampleHouse(){
+    console.log("goto exampel house");
+    window.location.href= "edit.html";
+}
+
+
