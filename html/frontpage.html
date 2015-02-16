@@ -2,43 +2,53 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/frontpage.css">
     <script type="text/javascript" src="/js/user_action.js"></script>
     <title>Drömhus</title>
 </head>
+
 <body>
-<div class="header"><p>DRÖMHUS</p></div>
+<div class="header">
+    <p>DRÖMHUS</p>
+</div>
+
 <div class="content">
     <div id="div1">
         <img src="/img/family-House.jpg" alt="family house image" id="front_img">
+        <div class="row">
 
-        <div class="text-holder" id="front_textblock">
-            <p>Välkommen på resan till ditt dröm hus</p>
-            <p>Varför drömma om fantasin inte får vara på rikitigt</p>
-            <p>vi gör din dröm verklig</p>
+            <div class="col-xs-4 text-holder" id="front_textblock">
+                <p>Välkommen på resan till ditt drömhus</p>
+                <p>Varför drömma om fantasin inte får vara på riktigt?</p>
+                <p>Vi gör din dröm verklig</p>
+            </div>
         </div>
 
-        <button type="button" id="test_btn" onclick="onClick()" >personlighets test</button>
-
-        <div class="text-holder" id="or_textblock">
-            <p><i>-- eller välj bland tidigare gjorda <b>drömhus</b>--</i></p>
+        <div class="row">
+            <button type="button" id="test_btn" onclick="onClick()" >personlighets test</button>
         </div>
 
-        <div class="example-houses">
-            <div class="example-house" onclick="goToExampleHouse()">
-                <img src="images/ex1.jpeg">
+        <div class="row">
+            <div class="col-xs-4 text-holder" id="or_textblock">
+                <p><i>-- eller välj bland tidigare gjorda <b>drömhus</b>--</i></p>
+            </div>
+        </div>
+
+        <div class="row example-houses">
+            <div class=" example-house" onclick="goToExampleHouse()">
+                <img src="/img/ex1.jpeg">
                 <p class="img-description"><i>Luftigt och stilrent</i></p>
             </div>
-            <div class="example-house" onclick="goToExampleHouse()">
-                <img src="images/ex2.jpeg">
+            <div class=" example-house" onclick="goToExampleHouse()">
+                <img src="/img/ex2.jpeg">
                 <p class="img-description"><i>Modernt och stilrent</i></p>
             </div>
-            <div class="example-house" onclick="goToExampleHouse()">
-                <img src="images/ex3.jpeg">
+            <div class=" example-house" onclick="goToExampleHouse()">
+                <img src="/img/ex3.jpeg">
                 <p class="img-description"><i>Varmt och avslappnande</i></p>
             </div>
         </div>
-
     </div>
 </div>
 <div class="footer"></div>

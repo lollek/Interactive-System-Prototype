@@ -24,8 +24,6 @@
 
 #div1 {
     position: relative;
-
-
 }
 
 #test_btn {
@@ -56,26 +54,24 @@
 
 #front_textblock {
     position: absolute;
-    left: 30%;
+    left: 33%;
     top: 7%;
-
 }
 
 #or_textblock {
     position: absolute;
     display: inline-block;
-    left: 31%;
+    left: 33%;
     top: 47%;
-
-
-
-
 }
 
 .text-holder {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
     background-color: rgba(192, 192, 192, 0.8);
     border-radius: 30px;
-
 
     text-align: center;
     color: #ffffff;
@@ -86,8 +82,13 @@
 }
 
 .example-houses {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
     position: absolute;
-    left: 175px;
+    left: 20%;
+    right: 20%;
     top: 60%;
 }
 
