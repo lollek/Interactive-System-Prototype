@@ -4,6 +4,6 @@
 
 function onClick() {
     console.log("goto personlighetstest");
-    window.location.href= "../personlighetstest.html";
+    window.location.href= "/html/personality_test.html";
 }
 
