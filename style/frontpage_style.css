@@ -56,8 +56,23 @@
 
 #front_textblock {
     position: absolute;
-    left: 31%;
+    left: 30%;
     top: 7%;
+
+}
+
+#or_textblock {
+    position: absolute;
+    display: inline-block;
+    left: 31%;
+    top: 47%;
+
+
+
+
+}
+
+.text-holder {
     background-color: rgba(192, 192, 192, 0.8);
     border-radius: 30px;
 
@@ -68,6 +83,31 @@
 
     padding: 20px;
 
+}
 
+.example-houses {
+    position: absolute;
+    left: 175px;
+    top: 60%;
+}
 
+.example-house {
+    display: block;
+    float: left;
+    padding: 15px;
+    padding-bottom: 10px;
+    margin: 15px;
+
+    cursor: pointer;
+
+    background-color: #ffffff;
+}
+
+.example-house:hover {
+    cursor: hand;
+}
+
+.example-house img {
+    width: 275px;
+    height: 183px;
 }
