@@ -1,0 +1,114 @@
+.header, .footer {
+    background-color: #4288E9;
+    width: 100%;
+    height: 75px;
+
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 20px;
+    padding-left: 15px;
+    padding-top: 35px;
+
+}
+
+.footer {
+    vertical-align: bottom;
+}
+
+#front_img {
+    z-index: -10;
+    height: 800px;
+    width: 100%;
+
+}
+
+#div1 {
+    position: relative;
+}
+
+#test_btn {
+
+    position: absolute;
+    left: 40%;
+    top: 35%;
+
+    border-radius: 30px;
+    border: none;
+
+    background-color: rgb(118, 255, 3);
+
+
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 30px;
+    padding: 20px;
+
+    cursor: pointer;
+
+
+}
+
+#test_btn:hover {
+    cursor: hand;
+}
+
+#front_textblock {
+    position: absolute;
+    left: 33%;
+    top: 7%;
+}
+
+#or_textblock {
+    position: absolute;
+    display: inline-block;
+    left: 33%;
+    top: 47%;
+}
+
+.text-holder {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
+    background-color: rgba(192, 192, 192, 0.8);
+    border-radius: 30px;
+
+    text-align: center;
+    color: #ffffff;
+    font-size: 22px;
+
+    padding: 20px;
+
+}
+
+.example-houses {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
+    position: absolute;
+    left: 20%;
+    right: 20%;
+    top: 60%;
+}
+
+.example-house {
+    display: block;
+    float: left;
+    padding: 15px;
+    padding-bottom: 10px;
+    margin: 15px;
+
+    cursor: pointer;
+
+    background-color: #ffffff;
+}
+
+.example-house:hover {
+    cursor: hand;
+}
+
+.example-house img {
+    width: 275px;
+    height: 183px;
+}
