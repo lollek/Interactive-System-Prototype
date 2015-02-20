@@ -11,6 +11,8 @@
       <!-- från master-->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
+    <script src="/js/toolbox.js"></script>
+    <script src="/js/edit.js"></script>
 
     <meta charset="UTF-8">
     <title> Edit </title>
@@ -30,7 +32,8 @@
         <a href="/html/order.html"><button id="rightmenu">Bestall</button></a>
     </nav>
     <section id="EditView">
-      EDITVIEW
+        <canvas id="blueprint"></canvas>
+        <script>blueprint.init();</script>
       <div class="EditExpandButton" id="WallsExpBtn">
         <div class='circle-container'>
           <a href='#' class='deg'><img src='/img/line_vertical.jpg'></a>
@@ -38,6 +41,8 @@
           <a href='#' class='center'><img src='/img/wall_index.jpeg'></a>
         </div>
       </div>
+
+
       <div class="EditExpandButton" id="DoorsExpBtn">
         <div class='circle-container'>
           <a href='#' class='deg'><img src='/img/door1.jpeg'></a>
