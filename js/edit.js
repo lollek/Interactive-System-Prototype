@@ -326,7 +326,7 @@ blueprint.init = function() {
     var editView = document.getElementById("EditView");
     blueprint.canvas = document.getElementById("blueprint");
     blueprint.context = blueprint.canvas.getContext("2d");
-    blueprint.canvas.width = editView.offsetWidth -200;
+    blueprint.canvas.width = editView.offsetWidth - 300; //Annars pajjar expand buttons! (beror på skärmen)
     blueprint.canvas.height = editView.offsetHeight;
 
     blueprint.canvas.addEventListener("mousemove", blueprint.mouseMoveEvent);
@@ -336,8 +336,8 @@ blueprint.init = function() {
     blueprint.house = {
     	x: blueprint.canvas.width/2 - 300,
     	y: blueprint.canvas.height/2 - 300,
-    	width: 600,
-    	height: 600
+    	width: 400,
+    	height: 400
     };
     blueprint.resetView();
 };

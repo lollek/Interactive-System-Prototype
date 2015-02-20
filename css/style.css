@@ -90,8 +90,6 @@ section h2 {
     height: 100px;
     background-color: white;
     border-radius: 400px;
-    margin-bottom: 5%;
-    margin-top: 2%;
     transition: width 0.5s, height 0.5s;
 }
 
