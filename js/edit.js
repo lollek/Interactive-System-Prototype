@@ -3,7 +3,7 @@ var blueprint = {};
 blueprint.canvas = undefined;
 blueprint.context = undefined;
 
-blueprint.rooms = [];
+blueprint.house = undefined;
 blueprint.walls = [];
 
 blueprint.closestWall = {room: null, wallId: null, distance: Infinity};
@@ -65,9 +65,7 @@ blueprint.mouseMoveEventFindClosestWall = function(x, y) {
     }
 
     blueprint.closestWall = {room: null, wallId: null, distance: Infinity};
-    for (var i in blueprint.rooms) {
-        blueprint.checkClosestWall(x, y, blueprint.rooms[i]);
-    }
+    blueprint.checkClosestWall(x, y, blueprint.house);
     if (blueprint.closestWall.distance !== Infinity) {
         blueprint.highlightWall(blueprint.closestWall.room, blueprint.closestWall.wallId, "yellow");
     }
@@ -110,10 +108,9 @@ blueprint.moveWall = function(x, y) {
 };
 
 blueprint.useToolMove = function(x, y, toolName) {
-	var house = blueprint.rooms[0];
 	if (toolName == "verticalWall"
-		&& house.x < x && x < house.x + house.width
-		&& house.y < y && y < house.y + house.height) {
+		&& blueprint.house.x < x && x < blueprint.house.x + blueprint.house.width
+		&& blueprint.house.y < y && y < blueprint.house.y + blueprint.house.height) {
 		if (blueprint.walls.length > 0) {
 			blueprint.walls[blueprint.walls.length -1].pos = x;
 			blueprint.resetView();
@@ -122,11 +119,9 @@ blueprint.useToolMove = function(x, y, toolName) {
 };
 
 blueprint.addWall = function(type) {
-	//TODO: Remove hardcoded house
-	var house = blueprint.rooms[0];
 	blueprint.walls.push({
 		type: type,
-		pos: house.x
+		pos: blueprint.house.x
 	});
 };
 
@@ -166,11 +161,10 @@ blueprint.mouseDownEvent = function(event) {
 blueprint.mouseUpEvent = function(event) {
 	if (blueprint.isMovingWall) {
 		blueprint.isMovingWall = false;
-		var house = blueprint.rooms[0]; // TODO: Remove hardcoded house
 		for (var i in blueprint.walls) {
 			var wall = blueprint.walls[i];
 			if (wall.type == blueprint.VERTICAL
-					&& !(house.x < wall.pos && wall.pos < house.x + house.width)) {
+					&& !(blueprint.house.x < wall.pos && wall.pos < blueprint.house.x + blueprint.house.width)) {
 				blueprint.walls.splice(i,1);
 				blueprint.resetView();
 			}
@@ -205,11 +199,6 @@ blueprint.highlightWall = function(room, wall, color) {
     blueprint.context.stroke();
 };
 
-blueprint.addRoom = function(x, y, width, height) {
-    blueprint.rooms.push({x: x, y: y, width: width, height: height});
-    blueprint.resetView();
-};
-
 blueprint.resetView = function() {
     blueprint.context.clearRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
 
@@ -217,22 +206,17 @@ blueprint.resetView = function() {
     blueprint.context.fillRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
     blueprint.context.beginPath();
 
-    for (var i in blueprint.rooms) {
-        var room = blueprint.rooms[i];
-        blueprint.context.moveTo(room.x, room.y);
-        blueprint.context.lineTo(room.x + room.width, room.y);
-        blueprint.context.lineTo(room.x + room.width, room.y + room.height);
-        blueprint.context.lineTo(room.x, room.y + room.height);
-        blueprint.context.lineTo(room.x, room.y);
-    }
+    blueprint.context.moveTo(blueprint.house.x, blueprint.house.y);
+    blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, blueprint.house.y);
+    blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, blueprint.house.y + blueprint.house.height);
+    blueprint.context.lineTo(blueprint.house.x, blueprint.house.y + blueprint.house.height);
+    blueprint.context.lineTo(blueprint.house.x, blueprint.house.y);
     
-    // TODO: Remove hardcoded house
-    var house = blueprint.rooms[0];
     for (var i in blueprint.walls) {
     	var wall = blueprint.walls[i];
     	if (wall.type == blueprint.VERTICAL) {
-    		blueprint.context.moveTo(wall.pos, house.y);
-    		blueprint.context.lineTo(wall.pos, house.y + house.height);
+    		blueprint.context.moveTo(wall.pos, blueprint.house.y);
+    		blueprint.context.lineTo(wall.pos, blueprint.house.y + blueprint.house.height);
     	}
     }
     
@@ -253,5 +237,11 @@ blueprint.init = function() {
     blueprint.canvas.addEventListener("mousedown", blueprint.mouseDownEvent);
     blueprint.canvas.addEventListener("mouseup", blueprint.mouseUpEvent);
 
-    blueprint.addRoom(blueprint.canvas.width/2 - 300, blueprint.canvas.height/2 - 300, 600, 600);
+    blueprint.house = {
+    	x: blueprint.canvas.width/2 - 300,
+    	y: blueprint.canvas.height/2 - 300,
+    	width: 600,
+    	height: 600
+    };
+    blueprint.resetView();
 };
