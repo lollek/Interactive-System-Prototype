@@ -64,11 +64,11 @@ section h2 {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    transition: width 1s, height 1s;
+    transition: width 0.5s, height 0.5s;
 }
 
 
-.circle-container-change {
+.circle-resize {
     width: 200px;
     height: 200px;
 }
@@ -93,45 +93,48 @@ section h2 {
 */
 
 .circle-container a {
-    display: none;
     position: absolute;
+    background-color: blue;
     top: 50%; left: 50%;
     width: 20px; height: 20px;
     margin-left: -10px;
-    margin-top: -25px;
+    margin-top: -10px;
 }
 
-.circle-container a.center{
+a.center{
     display: block;
     position: absolute;
     top: 50%; left: 50%;
     width: 20px; height: 20px;
     margin-left: -10px;
-    margin-top: -25px;
+    margin-top: -10px;
 }
 
 .deg135 { 
+    display: block;
     transform: rotate(135deg) translate(0px) rotate(-135deg);
-    transition: transform 1s;
+    transition: transform 0.5s;
 }
 
-.deg135-changed {
+.deg135-spanned-out {
     transform: rotate(135deg) translate(80px) rotate(-135deg);
 }
 
 .deg180 { 
+    display: block;
     transform: rotate(180deg) translate(0px) rotate(-180deg);
-    transition: transform 1s;
+    transition: transform 0.5s;
 }
-.deg180-changed {
+.deg180-spanned-out {
     transform: rotate(180deg) translate(80px) rotate(-180deg);
 }
 
 .deg225 { 
+    display: block;
     transform: rotate(225deg)  translate(0px) rotate(-225deg);
-    transition: transform 1s;
+    transition: transform 0.5s;
 }
-.deg225-changed {
+.deg225-spanned-out {
     transform: rotate(225deg) translate(80px) rotate(-225deg);
 }
 
@@ -143,7 +146,7 @@ section h2 {
     background-color: white;
     border-radius: 400px;
     margin-bottom: 5%;
-    transition: width 1s, height 1s;
+    transition: width 0.5s, height 0.5s;
 }
 
 .EditExpandButton:hover {
