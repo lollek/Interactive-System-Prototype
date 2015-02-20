@@ -95,15 +95,32 @@ blueprint.moveWall = function(x, y) {
     blueprint.resetView();
 };
 
+blueprint.useTool = function(x, y, toolName) {
+	var house = blueprint.rooms[0];
+	if (toolName == "verticalWall"
+		&& house.x < x && x < house.x + house.width
+		&& house.y < y && y < house.y + house.height) {
+		blueprint.resetView();
+		
+	    blueprint.context.beginPath();
+	    blueprint.context.moveTo(x, house.y);
+        blueprint.context.lineTo(x, house.y + house.height);
+	    blueprint.context.closePath();
+	    blueprint.context.stroke();
+	}
+};
+
 blueprint.mouseMoveEvent = function(event) {
     var rect = blueprint.canvas.getBoundingClientRect();
     var x = ~~(event.clientX - rect.left);
     var y = event.clientY - rect.top;
 
-    if (!blueprint.isMovingWall) {
-        blueprint.mouseMoveEventFindClosestWall(x, y);
-    } else {
+    if (blueprint.isMovingWall) {
         blueprint.moveWall(x, y);
+    } else if  (toolbox.selectedTool !== undefined) {
+        blueprint.useTool(x, y, toolbox.selectedTool);
+    } else {
+        blueprint.mouseMoveEventFindClosestWall(x, y);
     }
 
 };
@@ -121,6 +138,7 @@ blueprint.mouseDownEvent = function(event) {
 
 blueprint.mouseUpEvent = function(event) {
     blueprint.isMovingWall = false;
+    toolbox.selectedTool = undefined;
 };
 
 blueprint.highlightWall = function(room, wall, color) {
