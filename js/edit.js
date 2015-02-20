@@ -4,6 +4,7 @@ blueprint.canvas = undefined;
 blueprint.context = undefined;
 
 blueprint.rooms = [];
+blueprint.walls = [];
 
 blueprint.closestWall = {room: null, wallId: null, distance: Infinity};
 blueprint.isMovingWall = false;
@@ -13,6 +14,9 @@ blueprint.LEFT = 0;
 blueprint.RIGHT = 1;
 blueprint.BOTTOM = 2;
 blueprint.TOP = 3;
+
+blueprint.HORIZONTAL = 0;
+blueprint.VERTICAL = 1;
 
 blueprint.checkClosestWall = function(x, y, room) {
     var distance = Infinity;
@@ -95,19 +99,29 @@ blueprint.moveWall = function(x, y) {
     blueprint.resetView();
 };
 
-blueprint.useTool = function(x, y, toolName) {
+blueprint.useToolMove = function(x, y, toolName) {
 	var house = blueprint.rooms[0];
 	if (toolName == "verticalWall"
 		&& house.x < x && x < house.x + house.width
 		&& house.y < y && y < house.y + house.height) {
-		blueprint.resetView();
-		
-	    blueprint.context.beginPath();
-	    blueprint.context.moveTo(x, house.y);
-        blueprint.context.lineTo(x, house.y + house.height);
-	    blueprint.context.closePath();
-	    blueprint.context.stroke();
+		if (blueprint.walls.length > 0) {
+			blueprint.walls[blueprint.walls.length -1].pos = x;
+			blueprint.resetView();
+		}
 	}
+};
+
+blueprint.addWall = function(type) {
+	//TODO: Remove hardcoded house
+	var house = blueprint.rooms[0];
+	blueprint.walls.push({
+		type: type,
+		pos: house.x
+	});
+};
+
+blueprint.useToolClick = function(x, y, toolName) {
+	toolbox.selectedTool = undefined;
 };
 
 blueprint.mouseMoveEvent = function(event) {
@@ -118,7 +132,7 @@ blueprint.mouseMoveEvent = function(event) {
     if (blueprint.isMovingWall) {
         blueprint.moveWall(x, y);
     } else if  (toolbox.selectedTool !== undefined) {
-        blueprint.useTool(x, y, toolbox.selectedTool);
+        blueprint.useToolMove(x, y, toolbox.selectedTool);
     } else {
         blueprint.mouseMoveEventFindClosestWall(x, y);
     }
@@ -126,11 +140,14 @@ blueprint.mouseMoveEvent = function(event) {
 };
 
 blueprint.mouseDownEvent = function(event) {
-    if (blueprint.closestWall.distance !== Infinity) {
-        var rect = blueprint.canvas.getBoundingClientRect();
-        var x = ~~(event.clientX - rect.left);
-        var y = event.clientY - rect.top;
-
+    var rect = blueprint.canvas.getBoundingClientRect();
+    var x = ~~(event.clientX - rect.left);
+    var y = event.clientY - rect.top;
+    
+    if (toolbox.selectedTool !== undefined) {
+    	console.log(toolbox.selectedTool)
+    	blueprint.useToolClick(x, y, toolbox.selectedTool);
+    } else if (blueprint.closestWall.distance !== Infinity) {
         blueprint.isMovingWall = true;
         blueprint.moveWall(x, y);
     }
@@ -138,12 +155,13 @@ blueprint.mouseDownEvent = function(event) {
 
 blueprint.mouseUpEvent = function(event) {
     blueprint.isMovingWall = false;
-    toolbox.selectedTool = undefined;
 };
 
 blueprint.highlightWall = function(room, wall, color) {
     blueprint.context.beginPath();
     blueprint.context.strokeStyle = color;
+    blueprint.context.lineWidth = 3;
+    
     switch (wall) {
         case blueprint.TOP:
             blueprint.context.moveTo(room.x, room.y);
@@ -176,19 +194,30 @@ blueprint.resetView = function() {
 
     blueprint.context.fillStyle = "blue";
     blueprint.context.fillRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
+    blueprint.context.beginPath();
 
     for (var i in blueprint.rooms) {
         var room = blueprint.rooms[i];
-        blueprint.context.beginPath();
         blueprint.context.moveTo(room.x, room.y);
         blueprint.context.lineTo(room.x + room.width, room.y);
         blueprint.context.lineTo(room.x + room.width, room.y + room.height);
         blueprint.context.lineTo(room.x, room.y + room.height);
         blueprint.context.lineTo(room.x, room.y);
-        blueprint.context.closePath();
     }
-
+    
+    // TODO: Remove hardcoded house
+    var house = blueprint.rooms[0];
+    for (var i in blueprint.walls) {
+    	var wall = blueprint.walls[i];
+    	if (wall.type == blueprint.VERTICAL) {
+    		blueprint.context.moveTo(wall.pos, house.y);
+    		blueprint.context.lineTo(wall.pos, house.y + house.height);
+    	}
+    }
+    
+    blueprint.context.closePath();
     blueprint.context.strokeStyle = "white";
+    blueprint.context.lineWidth = 1;
     blueprint.context.stroke();
 };
 
@@ -203,5 +232,5 @@ blueprint.init = function() {
     blueprint.canvas.addEventListener("mousedown", blueprint.mouseDownEvent);
     blueprint.canvas.addEventListener("mouseup", blueprint.mouseUpEvent);
 
-    blueprint.addRoom(blueprint.canvas.width/2 - 100, blueprint.canvas.height/2 - 100, 200, 200);
+    blueprint.addRoom(blueprint.canvas.width/2 - 300, blueprint.canvas.height/2 - 300, 600, 600);
 };
