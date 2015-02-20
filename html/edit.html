@@ -3,9 +3,15 @@
   <head>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
       <link rel="stylesheet" type="text/css" href="/css/common.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>-->
     <script src="/js/animation_event.js"></script>
       <script type="text/javascript" src="/js/user_action.js"></script>
+
+
+      <!-- från master-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+
     <meta charset="UTF-8">
     <title> Edit </title>
   </head>
@@ -25,27 +31,38 @@
     </nav>
     <section id="EditView">
       EDITVIEW
-      <div class="EditExpandButton">
-        Fönster
+      <div class="EditExpandButton" id="WallsExpBtn">
         <div class='circle-container'>
-          <a href='#' class='center'><img src='/img/ex2.jpeg' height="20px" width="20px"></a>
-          <a href='#' class='deg135'><img src='/img/ex2.jpeg' height="20px" width="20px"></a>
-          <a href='#' class='deg180'><img src='/img/ex2.jpeg' height="20px" width="20px"></a>
-          <a href='#' class='deg225'><img src='/img/ex2.jpeg' height="20px" width="20px"></a>
+          <a href='#' class='deg'><img src='/img/line_vertical.jpg'></a>
+          <a href='#' class='deg'><img src='/img/line_horizontell.jpg'></a>
+          <a href='#' class='center'><img src='/img/wall_index.jpeg'></a>
         </div>
       </div>
-
-      <div class="EditExpandButton">
-        Dörrar
+      <div class="EditExpandButton" id="DoorsExpBtn">
+        <div class='circle-container'>
+          <a href='#' class='deg'><img src='/img/door1.jpeg'></a>
+          <a href='#' class='deg'><img src='/img/door2.jpg'></a>
+          <a href='#' class='deg'><img src='/img/door3.jpeg'></a>
+          <a href='#' class='deg'><img src='/img/door4.jpeg'></a>
+          <a href='#' class='center'><img src='/img/door_index.jpeg'></a>
+        </div>
       </div>
-      <div class="EditExpandButton">
-        Övrigt
+      <div class="EditExpandButton" id="WindowsExpBtn">
+        <div class='circle-container'>
+          <a href='#' class='deg'><img src='/img/window1.jpeg'></a>
+          <a href='#' class='deg'><img src='/img/window2.jpeg'></a>
+          <a href='#' class='deg'><img src='/img/window3.jpg'></a>
+          <a href='#' class='center'><img src='/img/window_index.jpeg'></a>
+        </div>
       </div>
       <section>
         3d-view
       </section>
     </section>
 
+
   <footer></footer>
+  <!-- RÖR EJ -->
+  <script type="text/javascript" src="/js/animation_event.js"></script>
   </body>
 </html>
