@@ -20,6 +20,7 @@ section {
 }
 
 header p {
+    display: inline-block;
     float: left;
     cursor: pointer;
 }
@@ -30,7 +31,7 @@ header p:hover {
 }
 
 nav {
-    background-color: dimgrey;
+    background-color: limegreen;
     height: 50px;
     width: 90%;
     margin: 0 auto;
