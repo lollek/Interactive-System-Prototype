@@ -67,75 +67,29 @@ section h2 {
     transition: width 0.5s, height 0.5s;
 }
 
-
 .circle-resize {
     width: 200px;
     height: 200px;
 }
-/*
-.circle-container {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-}
-
 
 .circle-container a {
     display: block;
     position: absolute;
     top: 50%; left: 50%;
     width: 20px; height: 20px;
-    margin-left: -10px;
+    margin-left: -25px;
     margin-top: -25px;
 }
 
-*/
-
-.circle-container a {
-    position: absolute;
-    background-color: blue;
-    top: 50%; left: 50%;
-    width: 20px; height: 20px;
-    margin-left: -10px;
-    margin-top: -10px;
+.circle-container a img {
+    width: 50px;
+    height: 50px;
+    border-radius: 400px;
 }
 
-a.center{
-    display: block;
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 20px; height: 20px;
-    margin-left: -10px;
-    margin-top: -10px;
-}
-
-.deg135 { 
-    display: block;
-    transform: rotate(135deg) translate(0px) rotate(-135deg);
+.deg { 
+    transform: rotate(0deg) translate(0px) rotate(-0deg);
     transition: transform 0.5s;
-}
-
-.deg135-spanned-out {
-    transform: rotate(135deg) translate(80px) rotate(-135deg);
-}
-
-.deg180 { 
-    display: block;
-    transform: rotate(180deg) translate(0px) rotate(-180deg);
-    transition: transform 0.5s;
-}
-.deg180-spanned-out {
-    transform: rotate(180deg) translate(80px) rotate(-180deg);
-}
-
-.deg225 { 
-    display: block;
-    transform: rotate(225deg)  translate(0px) rotate(-225deg);
-    transition: transform 0.5s;
-}
-.deg225-spanned-out {
-    transform: rotate(225deg) translate(80px) rotate(-225deg);
 }
 
 .EditExpandButton {
@@ -146,6 +100,7 @@ a.center{
     background-color: white;
     border-radius: 400px;
     margin-bottom: 5%;
+    margin-top: 2%;
     transition: width 0.5s, height 0.5s;
 }
 
