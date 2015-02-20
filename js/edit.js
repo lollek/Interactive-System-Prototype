@@ -74,29 +74,39 @@ blueprint.mouseMoveEventFindClosestWall = function(x, y) {
 };
 
 blueprint.moveWall = function(x, y) {
+	var MIN_HOUSE_SIZE = 50; 
+	var newHouse = JSON.parse(JSON.stringify(blueprint.closestWall.room)); // copy by reference
+	
     switch (blueprint.closestWall.wallId) {
         case blueprint.TOP:
-            var y2 = blueprint.closestWall.room.y + blueprint.closestWall.room.height;
-            blueprint.closestWall.room.y = y;
-            blueprint.closestWall.room.height = y2 - y;
+            var y2 = newHouse.y + newHouse.height;
+            newHouse.y = y;
+            newHouse.height = y2 - y;
             break;
         case blueprint.LEFT:
-            var x2 = blueprint.closestWall.room.x + blueprint.closestWall.room.width;
-            blueprint.closestWall.room.x = x;
-            blueprint.closestWall.room.width = x2 - x;
+            var x2 = newHouse.x + newHouse.width;
+            newHouse.x = x;
+            newHouse.width = x2 - x;
             break;
         case blueprint.BOTTOM:
-            var y2 = blueprint.closestWall.room.y;
-            blueprint.closestWall.room.height = y - y2;
-            blueprint.closestWall.room.y = y2;
+            var y2 = newHouse.y;
+            newHouse.height = y - y2;
+            newHouse.y = y2;
             break;
         case blueprint.RIGHT:
-            var x2 = blueprint.closestWall.room.x;
-            blueprint.closestWall.room.width = x - x2;
-            blueprint.closestWall.room.x = x2;
+            var x2 = newHouse.x;
+            newHouse.width = x - x2;
+            newHouse.x = x2;
             break;
     }
-    blueprint.resetView();
+    
+    if (newHouse.width >= MIN_HOUSE_SIZE && newHouse.height >= MIN_HOUSE_SIZE) {
+    	blueprint.closestWall.room.x = newHouse.x;
+    	blueprint.closestWall.room.width = newHouse.width;
+    	blueprint.closestWall.room.y = newHouse.y;
+    	blueprint.closestWall.room.height = newHouse.height;
+        blueprint.resetView();
+    }
 };
 
 blueprint.useToolMove = function(x, y, toolName) {
