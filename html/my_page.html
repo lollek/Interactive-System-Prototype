@@ -3,38 +3,54 @@
 <head>
     <title>Drömhus</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">-->
     <link href="/css/my_page.css" rel="stylesheet" type="text/css">
+    <link href="/css/common.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/js/user_action.js"></script>
 </head>
 
 <body>
-<h1>Min Sida</h1>
+<header onclick="goToFrontpage()">
+    <p>Drömhus</p>
+</header>
 
+<section>
+    <section class="options">
+        <article onclick="goToEdit()">
+            <p>Skapa och modifiera</p>
+            <img src="../img/blueprint.jpg">
+        </article>
+        <article onclick="goToOrder()">
+            <p>Gå till beställning</p>
+            <img src="../img/happy-workers.jpg">
+        </article>
 
-
-
-<div class="container">
-    <div class="row">
-        <div class="col-xs-6">
-            <span>Till sandlåda</span>
+    </section>
+</section>
+<footer></footer>
+        <!--
+        <div class="row">
+            <div class="col-xs-6">
+                <span>Till sandlåda</span>
+            </div>
+            <div class="col-xs-6">
+                <span>Till beställningssidan</span>
+            </div>
         </div>
-        <div class="col-xs-6">
-            <span>Till beställningssidan</span>
-        </div>
-    </div>
 
-    <div class="row">
-        <div class="col-xs-6">
-            <a href="/html/edit.html">
-                <img class="largeimage" src="http://tinyurl.com/oyt2zmm" alt="bild på sandlådan">
-            </a>
+        <div class="row">
+            <div class="col-xs-6">
+                <a href="/html/edit.html">
+                    <img class="largeimage" src="../img/blueprint.jpg" alt="bild på sandlådan">
+                </a>
+            </div>
+            <div class="col-xs-6">
+                <a href="/html/order.html">
+                    <img class="largeimage" src="../img/happy-workers.jpg" alt="gå till bäställningssida">
+                </a>
+            </div>
         </div>
-        <div class="col-xs-6">
-            <a href="/html/order.html">
-                <img class="largeimage" src="http://tinyurl.com/ka2xurt" alt="bild på bäställningssida">
-            </a>
-        </div>
-    </div>
-</div>
+        -->
+
 </body>
 </html>

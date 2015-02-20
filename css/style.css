@@ -1,26 +1,17 @@
 html, body {
     height: 100%;
-    background-color: green;
+    background-color: dimgrey;
     margin-top: 10px;
+    z-index: 2;
+    box-shadow: #4288E9;
 }
 
-nav {
-    height: 5%;
-    width: 90%;
-    margin: 0 auto;
-}
-
-nav button {
-    margin: 1%;
-    float: left;
-    height: 100%;
-}
 
 section {
     margin: 0 auto;
     clear: both;
     width: 90%;
-    background-color: red;
+    background-color: whitesmoke;
     position: relative;
     overflow: hidden;
 }
