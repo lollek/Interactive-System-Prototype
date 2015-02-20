@@ -1,3 +1,4 @@
+
 html, body {
     margin: 0;
     padding: 0;
@@ -18,19 +19,18 @@ footer {
     vertical-align: bottom;
 }
 
+header h1{
+    display: inline-block;
+    vertical-align: middle;
+}
+
 body section {
     padding: 20px 0;
     width: 100%;
     text-align: center;
     background-image: url("../img/family-House.jpg");
 }
-/*
-body section img {
-    z-index: -10;
-    height: 800px;
-    width: 100%;
-}
-*/
+
 body section article {
     margin: 0px auto;
     display: block;
@@ -103,4 +103,5 @@ section section article p {
     font-size: 22px;
 
     padding: 20px;
+
 }

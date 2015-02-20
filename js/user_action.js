@@ -13,4 +13,20 @@ function goToExampleHouse(){
     window.location.href= "edit.html";
 }
 
+function goToEdit(){
+    console.log("goto exampel house");
+    window.location.href= "edit.html";
+}
+
+
+function goToOrder(){
+    console.log("goto order");
+    window.location.href= "order.html";
+}
+
+
+function goToFrontpage(){
+    console.log("goto frontpage");
+    window.location.href= "../html/frontpage.html";
+}
 

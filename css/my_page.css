@@ -20,3 +20,21 @@ img {
     height: 300px;
     width: 400px;
 }
+
+section section {
+    display: block;
+
+}
+.options article {
+    display: inline-block;
+    cursor: pointer;
+
+    background-color: #FFFF6610;
+    padding: 25px;
+
+}
+
+.options article:hover {
+    cursor: hand;
+}
+
