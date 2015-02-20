@@ -131,7 +131,7 @@ blueprint.mouseMoveEvent = function(event) {
 
     if (blueprint.isMovingWall) {
         blueprint.moveWall(x, y);
-    } else if  (toolbox.selectedTool !== undefined) {
+    } else if (toolbox.selectedTool !== undefined) {
         blueprint.useToolMove(x, y, toolbox.selectedTool);
     } else {
         blueprint.mouseMoveEventFindClosestWall(x, y);
@@ -154,7 +154,18 @@ blueprint.mouseDownEvent = function(event) {
 };
 
 blueprint.mouseUpEvent = function(event) {
-    blueprint.isMovingWall = false;
+	if (blueprint.isMovingWall) {
+		blueprint.isMovingWall = false;
+		var house = blueprint.rooms[0]; // TODO: Remove hardcoded house
+		for (var i in blueprint.walls) {
+			var wall = blueprint.walls[i];
+			if (wall.type == blueprint.VERTICAL
+					&& !(house.x < wall.pos && wall.pos < house.x + house.width)) {
+				blueprint.walls.splice(i,1);
+				blueprint.resetView();
+			}
+		}
+	}
 };
 
 blueprint.highlightWall = function(room, wall, color) {
