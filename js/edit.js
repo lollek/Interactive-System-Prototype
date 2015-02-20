@@ -1,20 +1,20 @@
-var canvas;
-var context;
+var blueprint = {};
 
-var rooms = [];
+blueprint.canvas = undefined;
+blueprint.context = undefined;
 
-var LEFT = 0;
-var RIGHT = 1;
-var BOTTOM = 2;
-var TOP = 3;
+blueprint.rooms = [];
 
-var closestWall = {room: null, wallId: null, distance: Infinity};
-var MINWALLOFFSET = 50;
+blueprint.closestWall = {room: null, wallId: null, distance: Infinity};
+blueprint.isMovingWall = false;
+blueprint.MINWALLOFFSET = 50;
 
-var isMovingWall = false;
+blueprint.LEFT = 0;
+blueprint.RIGHT = 1;
+blueprint.BOTTOM = 2;
+blueprint.TOP = 3;
 
-
-function checkClosestWall(x, y, room) {
+blueprint.checkClosestWall = function(x, y, room) {
     var distance = Infinity;
     var wall;
 
@@ -23,10 +23,10 @@ function checkClosestWall(x, y, room) {
         var wallBotDistance = Math.abs(y - (room.y + room.height));
 
         if (wallTopDistance < wallBotDistance) {
-            wall = TOP;
+            wall = blueprint.TOP;
             distance = wallTopDistance;
         } else {
-            wall = BOTTOM;
+            wall = blueprint.BOTTOM;
             distance = wallBotDistance;
         }
 
@@ -37,153 +37,153 @@ function checkClosestWall(x, y, room) {
 
         if (Math.min(distance, wallLeftDistance, wallRightDistance) != distance) {
             if (wallRightDistance < wallLeftDistance) {
-                wall = RIGHT;
+                wall = blueprint.RIGHT;
                 distance = wallRightDistance;
             } else {
-                wall = LEFT;
+                wall = blueprint.LEFT;
                 distance = wallLeftDistance;
             }
         }
     }
 
-    if (distance <= MINWALLOFFSET && distance < closestWall.distance) {
-        closestWall = {
+    if (distance <= blueprint.MINWALLOFFSET && distance < blueprint.closestWall.distance) {
+        blueprint.closestWall = {
             room: room,
             wallId: wall,
             distance: distance
         };
     }
-}
+};
 
-function mouseMoveEventFindClosestWall(x, y) {
-    if (closestWall.distance !== Infinity) {
-        resetView();
+blueprint.mouseMoveEventFindClosestWall = function(x, y) {
+    if (blueprint.closestWall.distance !== Infinity) {
+        blueprint.resetView();
     }
 
-    closestWall = {room: null, wallId: null, distance: Infinity};
-    for (var i in rooms) {
-        checkClosestWall(x, y, rooms[i]);
+    blueprint.closestWall = {room: null, wallId: null, distance: Infinity};
+    for (var i in blueprint.rooms) {
+        blueprint.checkClosestWall(x, y, blueprint.rooms[i]);
     }
-    if (closestWall.distance !== Infinity) {
-        highlightWall(closestWall.room, closestWall.wallId, "yellow");
+    if (blueprint.closestWall.distance !== Infinity) {
+        blueprint.highlightWall(blueprint.closestWall.room, blueprint.closestWall.wallId, "yellow");
     }
-}
+};
 
-function moveWall(x, y) {
-    switch (closestWall.wallId) {
-        case TOP:
-            var y2 = closestWall.room.y + closestWall.room.height;
-            closestWall.room.y = y;
-            closestWall.room.height = y2 - y;
+blueprint.moveWall = function(x, y) {
+    switch (blueprint.closestWall.wallId) {
+        case blueprint.TOP:
+            var y2 = blueprint.closestWall.room.y + blueprint.closestWall.room.height;
+            blueprint.closestWall.room.y = y;
+            blueprint.closestWall.room.height = y2 - y;
             break;
-        case LEFT:
-            var x2 = closestWall.room.x + closestWall.room.width;
-            closestWall.room.x = x;
-            closestWall.room.width = x2 - x;
+        case blueprint.LEFT:
+            var x2 = blueprint.closestWall.room.x + blueprint.closestWall.room.width;
+            blueprint.closestWall.room.x = x;
+            blueprint.closestWall.room.width = x2 - x;
             break;
-        case BOTTOM:
-            var y2 = closestWall.room.y;
-            closestWall.room.height = y - y2;
-            closestWall.room.y = y2;
+        case blueprint.BOTTOM:
+            var y2 = blueprint.closestWall.room.y;
+            blueprint.closestWall.room.height = y - y2;
+            blueprint.closestWall.room.y = y2;
             break;
-        case RIGHT:
-            var x2 = closestWall.room.x;
-            closestWall.room.width = x - x2;
-            closestWall.room.x = x2;
+        case blueprint.RIGHT:
+            var x2 = blueprint.closestWall.room.x;
+            blueprint.closestWall.room.width = x - x2;
+            blueprint.closestWall.room.x = x2;
             break;
     }
-    resetView();
-}
+    blueprint.resetView();
+};
 
-function mouseMoveEvent(event) {
-    var rect = canvas.getBoundingClientRect();
+blueprint.mouseMoveEvent = function(event) {
+    var rect = blueprint.canvas.getBoundingClientRect();
     var x = ~~(event.clientX - rect.left);
     var y = event.clientY - rect.top;
 
-    if (!isMovingWall) {
-        mouseMoveEventFindClosestWall(x, y);
+    if (!blueprint.isMovingWall) {
+        blueprint.mouseMoveEventFindClosestWall(x, y);
     } else {
-        moveWall(x, y);
+        blueprint.moveWall(x, y);
     }
 
-}
+};
 
-function mouseDownEvent(event) {
-    if (closestWall.distance !== Infinity) {
-        var rect = canvas.getBoundingClientRect();
+blueprint.mouseDownEvent = function(event) {
+    if (blueprint.closestWall.distance !== Infinity) {
+        var rect = blueprint.canvas.getBoundingClientRect();
         var x = ~~(event.clientX - rect.left);
         var y = event.clientY - rect.top;
 
-        isMovingWall = true;
-        moveWall(x, y);
+        blueprint.isMovingWall = true;
+        blueprint.moveWall(x, y);
     }
-}
+};
 
-function mouseUpEvent(event) {
-    isMovingWall = false;
-}
+blueprint.mouseUpEvent = function(event) {
+    blueprint.isMovingWall = false;
+};
 
-function highlightWall(room, wall, color) {
-    context.beginPath();
-    context.strokeStyle = color;
+blueprint.highlightWall = function(room, wall, color) {
+    blueprint.context.beginPath();
+    blueprint.context.strokeStyle = color;
     switch (wall) {
-        case TOP:
-            context.moveTo(room.x, room.y);
-            context.lineTo(room.x + room.width, room.y);
+        case blueprint.TOP:
+            blueprint.context.moveTo(room.x, room.y);
+            blueprint.context.lineTo(room.x + room.width, room.y);
             break;
-        case LEFT:
-            context.moveTo(room.x, room.y);
-            context.lineTo(room.x, room.y + room.height);
+        case blueprint.LEFT:
+            blueprint.context.moveTo(room.x, room.y);
+            blueprint.context.lineTo(room.x, room.y + room.height);
             break;
-        case BOTTOM:
-            context.moveTo(room.x, room.y + room.height);
-            context.lineTo(room.x + room.width, room.y + room.height);
+        case blueprint.BOTTOM:
+            blueprint.context.moveTo(room.x, room.y + room.height);
+            blueprint.context.lineTo(room.x + room.width, room.y + room.height);
             break;
-        case RIGHT:
-            context.moveTo(room.x + room.width, room.y);
-            context.lineTo(room.x + room.width, room.y + room.height);
+        case blueprint.RIGHT:
+            blueprint.context.moveTo(room.x + room.width, room.y);
+            blueprint.context.lineTo(room.x + room.width, room.y + room.height);
             break;
     }
-    context.closePath();
-    context.stroke();
-}
+    blueprint.context.closePath();
+    blueprint.context.stroke();
+};
 
-function addRoom(x, y, width, height) {
-    rooms.push({x: x, y: y, width: width, height: height});
-    resetView();
-}
+blueprint.addRoom = function(x, y, width, height) {
+    blueprint.rooms.push({x: x, y: y, width: width, height: height});
+    blueprint.resetView();
+};
 
-function resetView() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
+blueprint.resetView = function() {
+    blueprint.context.clearRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
 
-    context.fillStyle = "blue";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    blueprint.context.fillStyle = "blue";
+    blueprint.context.fillRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
 
-    for (var i in rooms) {
-        var room = rooms[i];
-        context.beginPath();
-        context.moveTo(room.x, room.y);
-        context.lineTo(room.x + room.width, room.y);
-        context.lineTo(room.x + room.width, room.y + room.height);
-        context.lineTo(room.x, room.y + room.height);
-        context.lineTo(room.x, room.y);
-        context.closePath();
+    for (var i in blueprint.rooms) {
+        var room = blueprint.rooms[i];
+        blueprint.context.beginPath();
+        blueprint.context.moveTo(room.x, room.y);
+        blueprint.context.lineTo(room.x + room.width, room.y);
+        blueprint.context.lineTo(room.x + room.width, room.y + room.height);
+        blueprint.context.lineTo(room.x, room.y + room.height);
+        blueprint.context.lineTo(room.x, room.y);
+        blueprint.context.closePath();
     }
 
-    context.strokeStyle = "white";
-    context.stroke();
-}
+    blueprint.context.strokeStyle = "white";
+    blueprint.context.stroke();
+};
 
-function init() {
+blueprint.init = function() {
     var editView = document.getElementById("EditView");
-    canvas = document.getElementById("blueprint");
-    context = canvas.getContext("2d");
-    canvas.width = editView.offsetWidth -200;
-    canvas.height = editView.offsetHeight;
+    blueprint.canvas = document.getElementById("blueprint");
+    blueprint.context = blueprint.canvas.getContext("2d");
+    blueprint.canvas.width = editView.offsetWidth -200;
+    blueprint.canvas.height = editView.offsetHeight;
 
-    canvas.addEventListener("mousemove", mouseMoveEvent);
-    canvas.addEventListener("mousedown", mouseDownEvent);
-    canvas.addEventListener("mouseup", mouseUpEvent);
+    blueprint.canvas.addEventListener("mousemove", blueprint.mouseMoveEvent);
+    blueprint.canvas.addEventListener("mousedown", blueprint.mouseDownEvent);
+    blueprint.canvas.addEventListener("mouseup", blueprint.mouseUpEvent);
 
-    addRoom(canvas.width/2 - 100, canvas.height/2 - 100, 200, 200);
-}
+    blueprint.addRoom(blueprint.canvas.width/2 - 100, blueprint.canvas.height/2 - 100, 200, 200);
+};
