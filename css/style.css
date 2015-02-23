@@ -51,7 +51,6 @@ section h2 {
 }
 
 .circle-container {
-    position: relative;
     width: 100px;
     height: 100px;
     border-radius: 50%;
@@ -84,13 +83,16 @@ section h2 {
 }
 
 .EditExpandButton {
+    position: absolute;
+    top: 0px;
+    right: 0px;
     clear: both;
     float: right;
     width: 100px;
     height: 100px;
     background-color: white;
     border-radius: 400px;
-    transition: width 0.5s, height 0.5s;
+    transition: width 0.5s, height 0.5s, top 0.5s;
 }
 
 .EditExpandButton:hover {
@@ -110,4 +112,16 @@ section h2 {
 
 #rightmenu {
     float: right;
+}
+
+#WallsExpBtn {
+    top: 0px;
+}
+
+#DoorsExpBtn {
+    top: 100px;
+}
+
+#WindowsExpBtn {
+    top: 200px;
 }
