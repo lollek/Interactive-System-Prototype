@@ -386,10 +386,10 @@ blueprint.init = function() {
   blueprint.canvas.addEventListener("mouseup", blueprint.mouseUpEvent);
 
   blueprint.house = {
-    x: blueprint.canvas.width/2,
-    y: blueprint.canvas.height/2,
-    width: 100,
-    height: 100
+    x: blueprint.canvas.width/2 - 300,
+    y: blueprint.canvas.height/2 - 300,
+    width: 400,
+    height: 400
   };
   blueprint.resetView();
 };
