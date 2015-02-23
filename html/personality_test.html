@@ -1,79 +1,93 @@
 <!DOCTYPE html>
 <html>
-
-<head data-gwd-animation-mode="proMode">
-  <title>Drömhus</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <link href="/css/personality_test.css" rel="stylesheet" type="text/css">
-</head>
-
-<body>
-  <div class="gwd-div-2yeb" id="header">Personlighetstest</div>
-  <form method="post" class="gwd-form-hxkt gwd-new-class-lkse gwd-new-class-nnjt" id="questions">
-    <div class="radio_buttons">
-      <div id="first_question">
-        <legend>
-          En fråga?
-        </legend>
-        <input name="1" type="radio">
-        <br>
-        <input name="1" type="radio">
-        <br>
-        <input name="1" type="radio">
-        <br>
-      </div>
-      <div id="second_question">
-        <legend>
-          En fråga till?
-        </legend>
-        <input name="2" type="radio">
-        <br>
-        <input name="2" type="radio">
-        <br>
-        <input name="2" type="radio">
-        <br>
-      </div>
-      <div id="third_question">
-        <legend>
-          En tredje fråga?
-        </legend>
-        <input name="3" type="radio">
-        <br>
-        <input name="3" type="radio">
-        <br>
-        <input name="3" type="radio">
-        <br>
-      </div>
-    </div>
-    <div class="sliders">
-      <div class="float">
-        <p>Natur</p>
-        <input class="center" type="range" min="0" max="100" step="1" value="50">
-        <p>Stad</p>
-      </div>
-      <div class="float">
-        <p class="clear">Mysigt</p>
-        <input class="center" type="range" min="0" max="100" step="1" value="50">
-        <p>Luftigt</p>
-      </div>
-      <div class="float">
-        <p class="clear">Ljust</p>
-        <input class="center" type="range" min="0" max="100" step="1" value="50">
-        <p>Färgglatt</p>
-      </div>
-      <div class="float">
-        <p class="clear">Små rum</p>
-        <input class="center" type="range" min="0" max="100" step="1" value="50">
-        <p>Stora rum</p>
-      </div>
-    </div>
-    <div class="submit">
-        <a href="/html/edit.html">
-      <button type="button">
+  <head>
+    <title>Drömhus</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link href="/css/frontpage.css" rel="stylesheet" type="text/css">
+  </head>
+  
+  <body>
+    <header>
+      <h1>DRÖMHUS</h1>
+    </header>
+    <section>
+      <form method="get" action="/html/edit.html">
+        <section class="radio_buttons">
+          <article>
+            <h2>
+              En fråga?
+            </h2>
+            <input name="1" type="radio">
+            <br>
+            <input name="1" type="radio">
+            <br>
+            <input name="1" type="radio">
+            <br>
+          </article>
+          <article>
+            <h2>
+              En fråga till?
+            </h2>
+            <input name="2" type="radio">
+            <br>
+            <input name="2" type="radio">
+            <br>
+            <input name="2" type="radio">
+            <br>
+          </article>
+          <article>
+            <h2>
+              En tredje fråga?
+            </h2>
+            <input name="3" type="radio">
+            <br>
+            <input name="3" type="radio">
+            <br>
+            <input name="3" type="radio">
+            <br>
+          </article>
+          <article>
+            <h2>
+              En fjärde fråga?
+            </h2>
+            <input name="4" type="radio">
+            <br>
+            <input name="4" type="radio">
+            <br>
+            <input name="4" type="radio">
+            <br>
+          </article>
+        </section>
+        <aside>
+          <article>
+            <p class="clear">Natur</p>
+            <input class="center" type="range" min="0" max="100" step="1" value="50">
+            <p>Stad</p>
+          </article>
+          <article>
+            <p class="clear">Mysigt</p>
+            <input class="center" type="range" min="0" max="100" step="1" value="50">
+            <p>Luftigt</p>
+          </article>
+          <article>
+            <p class="clear">Ljust</p>
+            <input class="center" type="range" min="0" max="100" step="1" value="50">
+            <p>Färgglatt</p>
+          </article>
+          <article>
+            <p class="clear">Små rum</p>
+            <input class="center" type="range" min="0" max="100" step="1" value="50">
+            <p>Stora rum</p>
+          </article>
+        </aside>
+        <button type="submit">
           Klar
-      </button>
-      </a>
-    </div>
-  </form>
-</body>
+        </button>
+      </form>
+    </section>
+    <footer>
+      <p>&copy; 2015 Byggarna</p>
+    </footer>
+  </body>
 </html>
