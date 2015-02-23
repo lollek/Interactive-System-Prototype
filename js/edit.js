@@ -1,3 +1,5 @@
+"use strict";
+
 var blueprint = {};
 
 blueprint.canvas = undefined;
@@ -166,6 +168,7 @@ blueprint.moveWallOuter = function(x, y) {
 };
 
 blueprint.moveWallInner = function(x, y) {
+  var room;
   var position;
   var min;
   var max;
