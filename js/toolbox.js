@@ -3,7 +3,12 @@ toolbox.selectedTool = undefined;
 
 toolbox.selectIcon = function(iconName) {
     toolbox.selectedTool = iconName;
-    if (iconName == "verticalWall") {
-    	blueprint.addWall(blueprint.VERTICAL);
+    switch (iconName) {
+    	case "verticalWall":
+    	    blueprint.addWall(blueprint.VERTICAL);
+    	    break;
+    	case "horizontalWall":
+    	    blueprint.addWall(blueprint.HORIZONTAL);
+    	    break;
     }
 };
