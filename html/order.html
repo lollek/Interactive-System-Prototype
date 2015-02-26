@@ -1,106 +1,119 @@
 <!DOCTYPE html>
 <html>
   <head>
-      <link rel="stylesheet" type="text/css" href="/css/style.css">
-      <link rel="stylesheet" type="text/css" href="/css/common.css">
-      <script type="text/javascript" src="/js/user_action.js"></script>
-      <meta charset="utf-8">
+    <!--<link rel="stylesheet" type="text/css" href="/css/style.css">
+        <link rel="stylesheet" type="text/css" href="/css/common.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <script type="text/javascript" src="/js/user_action.js"></script>
+    <meta charset="utf-8">
   </head>
   
   <body>
-  <header onclick="goToFrontpage()">
-      <p>Drömhus</p>
-  </header>
-
-
+    <header onclick="goToFrontpage()">
+      <h1>DRÖMHUS</h1>
+    </header>
+    
+    
     <nav>
       <a href="/html/my_page.html"><button>Start</button></a>
       <a href="/html/edit.html"><button>Fortsatt editera</button></a>
     </nav>
     <section>
-      <h1>Din order:</h1>
-      <article class="sidebyside">
-        <h2>Material:</h2>
+      <h2>Din order:</h2>
+      <section class="order">
         <article>
-          <p>Plankor x 2</p>
-          <p>Pris: 200kr</p>
+          <h2>Material:</h2>
+          <article>
+            <p class="left_column">Plankor x 2</p>
+            <p class="right_column">Pris: 200kr</p>
+          </article>
+          <article>
+            <p class="left_column">Kullersten x 40</p>
+            <p class="right_column">Pris: 1000kr</p>
+          </article>
+          <article>
+            <p class="left_column">Takpannor x 3</p>
+            <p class="right_column">Pris: 500kr</p>
+          </article>
+          <h2>Uppskattad arbetskostnad:</h2>
+          <article>
+            <p class="left_column">Pelle x 300h</p>
+            <p class="right_column">Pris: 200kr</p>
+          </article>
+          <article>
+            <p class="left_column">Johan x 20h</p>
+            <p class="right_column">Pris: 1000kr</p>
+          </article>
+          <article>
+            <p class="left_column">Anna x 0.5h</p>
+            <p class="right_column">Pris: 10000kr</p>
+          </article>
+          
+          <h2>Dumhetstillagg:</h2>
+          <article>
+            <p class="left_column">Kafferaster x 12000</p>
+            <p class="right_column">Pris: 1000kr</p>
+          </article>
+          <article>
+            <p class="left_column">Firmafest x 15</p>
+            <p class="right_column">Pris: 300000kr</p>
+          </article>
         </article>
+      </section>
+      <!--
+      <aside>
         <article>
-          <p>Kullersten x 40</p>
-          <p>Pris: 1000kr</p>
+          <h2>Material:</h2>
+          <article>
+            <p class="left_column">Plankor x 2</p>
+            <p class="right_column">Pris: 200kr</p>
+          </article>
+          <article>
+            <p class="left_column">Kullersten x 40</p>
+            <p class="right_column">Pris: 1000kr</p>
+          </article>
+          <article>
+            <p class="left_column">Takpannor x 3</p>
+            <p class="right_column">Pris: 500kr</p>
+          </article>
+          <h2>Uppskattad arbetskostnad:</h2>
+          <article>
+            <p class="left_column">Pelle x 300h</p>
+            <p class="right_column">Pris: 200kr</p>
+          </article>
+          <article>
+            <p class="left_column">Johan x 20h</p>
+            <p class="right_column">Pris: 1000kr</p>
+          </article>
+          <article>
+            <p class="left_column">Anna x 0.5h</p>
+            <p class="right_column">Pris: 10000kr</p>
+          </article>
+          
+          <h2>Dumhetstillagg:</h2>
+          <article>
+            <p class="left_column">Kafferaster x 12000</p>
+            <p class="right_column">Pris: 1000kr</p>
+          </article>
+          <article>
+            <p class="left_column">Firmafest x 15</p>
+            <p class="right_column">Pris: 300000kr</p>
+          </article>
         </article>
-        <article>
-          <p>Takpannor x 3</p>
-          <p>Pris: 500kr</p>
-        </article>
-        <h2>Uppskattad arbetskostnad:</h2>
-        <article>
-          <p>Pelle x 300h</p>
-          <p>Pris: 200kr</p>
-        </article>
-        <article>
-          <p>Johan x 20h</p>
-          <p>Pris: 1000kr</p>
-        </article>
-        <article>
-          <p>Anna x 0.5h</p>
-          <p>Pris: 10000kr</p>
-        </article>
-        
-        <h2>Dumhetstillagg:</h2>
-        <article>
-          <p>Kafferaster x 12000</p>
-          <p>Pris: 1000kr</p>
-        </article>
-        <article>
-          <p>Firmafest x 15</p>
-          <p>Pris: 300000kr</p>
-        </article>
-      </article>
+      </aside>
+      -->
       
-      <article class="sidebyside">
-        <h2>Material:</h2>
-        <article>
-          <p>Plankor x 2</p>
-          <p>Pris: 200kr</p>
-        </article>
-        <article>
-          <p>Kullersten x 40</p>
-          <p>Pris: 1000kr</p>
-        </article>
-        <article>
-          <p>Takpannor x 3</p>
-          <p>Pris: 500kr</p>
-        </article>
-        <h2>Uppskattad arbetskostnad:</h2>
-        <article>
-          <p>Pelle x 300h</p>
-          <p>Pris: 200kr</p>
-        </article>
-        <article>
-          <p>Johan x 20h</p>
-          <p>Pris: 1000kr</p>
-        </article>
-        <article>
-          <p>Anna x 0.5h</p>
-          <p>Pris: 10000kr</p>
-        </article>
+      <article>
+        <p id="total">Totalt: 3 999 999,99 kr</p>
         
-        <h2>Dumhetstillagg:</h2>
-        <article>
-          <p>Kafferaster x 12000</p>
-          <p>Pris: 1000kr</p>
-        </article>
-        <article>
-          <p>Firmafest x 15</p>
-          <p>Pris: 300000kr</p>
-        </article>
+        <button>Beställ</button>
       </article>
-
-      <p id="total">Totalt: 3 999 999,99 kr <button>Beställ</button></p>
     </section>
-
-  <footer></footer>
-
+    
+    <footer>
+      <p>&copy; 2015 Byggarna</p>
+    </footer>
+    
   </body>
 </html>

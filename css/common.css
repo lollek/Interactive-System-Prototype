@@ -1,3 +1,223 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #FF0000;
+}
+
+header, footer {
+    background-color: #4288E9;
+    width: 100%;
+
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 20px;
+    padding: 25px 0;
+}
+
+header h1 {
+    font-size: 22px;
+    margin-left: 5%;
+    cursor: pointer;
+}
+
+header h1:hover {
+    cursor: hand;
+}
+
+footer {
+    vertical-align: bottom;
+    text-align: center;
+}
+
+body section {
+    padding: 20px 0;
+    width: 100%;
+    text-align: center;
+    background-image: url("../img/family-House.jpg");
+}
+
+body section article {
+    margin: 0px auto;
+    display: block;
+    background-color: rgba(192, 192, 192, 0.8);
+    border-radius: 30px;
+    width: 33.333%;
+    text-align: center;
+    color: #ffffff;
+    font-size: 22px;
+
+    padding: 20px;
+}
+
+body section .radio_buttons {
+    clear: both;
+    display: inline-block;
+    padding: 20px;
+    margin: 0px auto;
+    text-align: center;
+    color: #ffffff;
+    font-size: 22px;
+
+    width: 40%;
+}
+
+body section .order {
+    clear: both;
+    display: inline-block;
+    padding: 20px;
+    margin: 0px auto;
+    text-align: center;
+    color: #ffffff;
+    font-size: 22px;
+
+    width: 80%;
+}
+
+body section aside {
+    display: inline-block;
+    padding: 20px;
+    margin: 0px auto;
+    text-align: center;
+    color: #ffffff;
+    font-size: 22px;
+    width: 40%;
+    vertical-align: top;
+}
+
+article input {
+    margin-top: 2%;
+    width: 50%;
+}
+
+.radio_buttons article input {
+    float: left;
+}
+
+.right_column {
+    float: right;
+    font-size: 18px;
+}
+
+.sliders .right_column {
+    margin-top: 3%;
+    width: 25%;
+}
+
+aside input[type="range"] {
+    clear: both;
+    display: inline;
+    width: 40%;
+}
+
+.left_column {
+    float: left;
+}
+
+.sliders .left_column {
+    margin-top: 3%;
+    width: 25%;
+}
+
+h2 {
+    font-size: 18px;
+}
+
+section .radio_buttons article,
+section .order article, 
+section aside article {
+    margin: 10px auto;
+    display: block;
+    overflow: hidden;
+    background-color: rgba(192, 192, 192, 0.8);
+    border-radius: 30px;
+    text-align: center;
+    color: #ffffff;
+    font-size: 22px;
+    width: 90%;
+
+    padding: 20px;
+}
+
+body section button {
+    display: block;
+    clear: both;
+    margin: 10px auto;
+    border-radius: 30px;
+    border: none;
+    background-color: rgb(118, 255, 3);
+
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 30px;
+    padding: 20px;
+
+    cursor: pointer;
+}
+
+section article button:hover {
+    cursor: hand;
+}
+
+body section section, 
+section article article, 
+.order article article {
+    background: transparent;
+}
+
+section section article {
+    display: inline-block;
+    padding: 15px;
+    padding-bottom: 10px;
+    margin: 15px;
+
+    cursor: pointer;
+
+    background-color: #ffffff;
+}
+
+section section article:hover {
+    cursor: hand;
+}
+
+section section article img {
+    width: 275px;
+    height: 183px;
+}
+
+section section article p {
+    color: #666666;
+}
+
+nav {
+    background-color: #5399FA;
+    height: 50px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+nav button {
+    display: block;
+    border-radius: 10px;
+    border: none;
+    background-color: #3177D8;
+
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 16px;
+    padding: 10px;
+
+    cursor: pointer;
+
+    margin: 4px 1%;
+    float: left;
+}
+
+nav .bestall {
+    background-color: rgb(118, 255, 3);
+}
+
+/*=======
+
 header, footer {
     background-color: #4288E9;
     width: 100%;
@@ -8,7 +228,6 @@ header, footer {
     font-size: 20px;
     padding-left: 15px;
     padding-top: 35px;
-
 }
 
 footer {
@@ -18,27 +237,5 @@ footer {
 section {
     position: relative;
 }
+*/
 
-header p {
-    display: inline-block;
-    float: left;
-    cursor: pointer;
-}
-
-header p:hover {
-    cursor: hand;
-
-}
-
-nav {
-    background-color: limegreen;
-    height: 50px;
-    width: 90%;
-    margin: 0 auto;
-}
-
-nav button {
-    margin: 1%;
-    float: left;
-
-}
