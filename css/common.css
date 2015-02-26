@@ -11,23 +11,48 @@ header, footer {
 
 }
 
+
+header img {
+    display: inline-block;
+    position: absolute;
+    right: 250px;
+    top: 60px;
+    float: right;
+    z-index: 2;
+}
+
+header #talk-bubbel {
+    display: inline-block;
+    visibility: hidden;
+    position: absolute;
+    top: 25px;
+    right: 150px;
+    float: right;
+    z-index: 2;
+    width: 175px;
+}
+
+header p {
+    display: inline-block;
+    position: absolute;
+    top: 25px;
+    right: 150px;
+    float: right;
+    width: 150px;
+    color: black;
+    z-index: 3;
+
+}
+
+
+
 footer {
     vertical-align: bottom;
 }
 
 section {
     position: relative;
-}
-
-header p {
-    display: inline-block;
-    float: left;
-    cursor: pointer;
-}
-
-header p:hover {
-    cursor: hand;
-
+    z-index: 5;
 }
 
 nav {
@@ -35,6 +60,7 @@ nav {
     height: 50px;
     width: 90%;
     margin: 0 auto;
+    z-index: 5;
 }
 
 nav button {

@@ -8,6 +8,8 @@
     <script type="text/javascript" src="/js/user_action.js"></script>
     <script src="/js/toolbox.js"></script>
     <script src="/js/edit.js"></script>
+    <script src="/js/companion.js"></script>
+
 
     <meta charset="UTF-8">
     <title> Edit </title>
@@ -16,14 +18,17 @@
   <body>
 
   <header onclick="goToFrontpage()">
-      <p>Drömhus</p>
+      <h1>Drömhus</h1>
+      <img src="../img/happy-guy.jpg">
+      <img id="talk-bubbel" src="../img/talk-bubble.png">
+      <p id="companion-msg"></p>
   </header>
 
 
     <nav>
       <a href="/html/my_page.html"><button>Start</button></a>
-      <button>Dela</button>
-      <button>Spara</button>
+      <button onclick="shareHouse()">Dela</button>
+      <button onclick="saveHouse()">Spara</button>
         <a href="/html/order.html"><button id="rightmenu">Bestall</button></a>
     </nav>
     <section id="EditView">

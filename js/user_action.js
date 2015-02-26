@@ -30,3 +30,11 @@ function goToFrontpage(){
     window.location.href= "../html/frontpage.html";
 }
 
+function shareHouse(){
+    window.alert("Nu kan andra se ditt drömhus");
+}
+
+function saveHouse(){
+    window.alert("Ditt drömhus är sparat");
+}
+

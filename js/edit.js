@@ -220,6 +220,10 @@ blueprint.useToolMove = function(x, y, toolName) {
 };
 
 blueprint.addWall = function(type) {
+
+  //reply from companion
+  CompanionRespone("add_wall");
+
   var pos;
   switch (type) {
     case blueprint.VERTICAL:   pos = blueprint.house.x; break;
