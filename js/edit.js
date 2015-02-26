@@ -566,7 +566,7 @@ blueprint.init = function() {
   var editView = document.getElementById("EditView");
   blueprint.canvas = document.getElementById("blueprint");
   blueprint.context = blueprint.canvas.getContext("2d");
-  blueprint.canvas.width = editView.offsetWidth - 400; //Annars pajjar expand buttons! (beror på skärmen)
+  blueprint.canvas.width = editView.offsetWidth;
   blueprint.canvas.height = editView.offsetHeight;
 
   blueprint.canvas.addEventListener("mousemove", blueprint.mouseMoveEvent);
