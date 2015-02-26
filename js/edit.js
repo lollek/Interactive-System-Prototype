@@ -260,18 +260,12 @@ blueprint.addPart = function(x, y, partType) {
 };
 
 blueprint.useToolClick = function(x, y, toolName) {
-  switch (toolbox.selectedTool) {
+  switch (toolName) {
     case "door":
       blueprint.addPart(x, y, 0);
       break;
     case "window":
       blueprint.addPart(x, y, 1);
-      break;
-    case "verticalWall":
-      blueprint.addWall(blueprint.VERTICAL);
-      break;
-    case "horizontalWall":
-      blueprint.addWall(blueprint.HORIZONTAL);
       break;
   }
   toolbox.selectedTool = undefined;
@@ -412,9 +406,9 @@ blueprint.drawParts = function(wall) {
             blueprint.context.arc(blueprint.house.x + wall.parts[i].offset, //Draw arc
                                   wall.pos,
                                   wall.parts[i].width,
-                                  Math.PI / 2,
-                                  Math.PI / 3,
-                                  true); //Clockwise
+                                  0,
+                                  Math.PI / 5,
+                                  false); //Counter clockwise
             blueprint.context.lineTo(blueprint.house.x + wall.parts[i].offset, wall.pos); //Draw door
         }
         break;
