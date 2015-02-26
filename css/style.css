@@ -1,17 +1,15 @@
 html, body {
     height: 100%;
-    background-color: dimgrey;
-    margin-top: 10px;
+    margin-top: 0px;
+    background-image: url("../img/family-House.jpg");
     z-index: 2;
     box-shadow: #4288E9;
 }
-
 
 section {
     margin: 0 auto;
     clear: both;
     width: 90%;
-    background-color: whitesmoke;
     position: relative;
     overflow: hidden;
 }
