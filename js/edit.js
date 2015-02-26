@@ -7,13 +7,7 @@ blueprint.context = undefined;
 
 blueprint.house = undefined;
 blueprint.walls = [];
-
-blueprint.closestWall = {
-  type: undefined,
-  angle: undefined,
-  room: null,
-  distance: Infinity
-};
+blueprint.closestWall = undefined;
 
 blueprint.isMovingWall = false;
 blueprint.MINWALLOFFSET = 50;
@@ -118,19 +112,13 @@ blueprint.checkClosestWall = function(x, y) {
 };
 
 blueprint.mouseMoveEventFindClosestWall = function(x, y) {
-  if (blueprint.closestWall.distance !== Infinity) {
+  if (blueprint.closestWall !== undefined) {
     blueprint.resetView();
+    blueprint.closestWall = undefined;
   }
 
-  blueprint.closestWall = {
-    type: undefined,
-    angle: undefined,
-    room: null,
-    distance: Infinity
-  };
-
   blueprint.checkClosestWall(x, y);
-  if (blueprint.closestWall.distance !== Infinity) {
+  if (blueprint.closestWall !== undefined) {
     blueprint.highlightWall(blueprint.closestWall);
   }
 };
@@ -236,9 +224,8 @@ blueprint.addWall = function(type) {
 blueprint.addPart = function(x, y, partType) {
   blueprint.checkClosestWall(x, y);
 
-  if (blueprint.closestWall.distance !== Infinity) {
+  if (blueprint.closestWall !== undefined) {
     if (blueprint.closestWall.angle == blueprint.VERTICAL) {
-      //TODO: ta bort hårdkodad dörrbredd
       blueprint.closestWall.room.parts.push({
         width: blueprint.PartWidths[partType],
         offset: blueprint.house.y + y,
@@ -288,7 +275,8 @@ blueprint.mouseDownEvent = function(event) {
 
   if (toolbox.selectedTool !== undefined) {
     blueprint.useToolClick(x, y, toolbox.selectedTool);
-  } else if (blueprint.closestWall.distance !== Infinity) {
+
+  } else if (blueprint.closestWall !== undefined) {
     blueprint.isMovingWall = true;
     blueprint.moveWall(x, y);
   }
