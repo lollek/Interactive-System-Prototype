@@ -251,6 +251,7 @@ blueprint.addPart = function(x, y, partType) {
         type: partType
       });
     }
+    blueprint.resetView();
   }
 };
 
