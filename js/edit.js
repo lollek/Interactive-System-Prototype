@@ -228,7 +228,8 @@ blueprint.addWall = function(type) {
 
   blueprint.walls.push({
     angle: type,
-    pos: pos
+    pos: pos,
+    parts: []
   });
 };
 
