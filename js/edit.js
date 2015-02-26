@@ -95,8 +95,8 @@ blueprint.checkClosestWall = function(x, y) {
           break;
 
         case blueprint.HORIZONTAL:
-            var wallDistance = Math.abs(y - wall.pos);
-            if (wallDistance < distance) {
+          var wallDistance = Math.abs(y - wall.pos);
+          if (wallDistance < distance) {
             type = blueprint.INNERWALL;
             room = wall;
             angle = wall.angle;
@@ -234,24 +234,24 @@ blueprint.addWall = function(type) {
 };
 
 blueprint.addPart = function(x, y, partType) {
-    blueprint.checkClosestWall(x, y);
+  blueprint.checkClosestWall(x, y);
 
-    if (blueprint.closestWall.distance !== Infinity) {
-      if (blueprint.closestWall.angle == blueprint.VERTICAL) {
-        //TODO: ta bort hårdkodad dörrbredd
-        blueprint.closestWall.room.parts.push({
-          width: blueprint.PartWidths[partType],
-          offset: blueprint.house.y + y,
-          type: partType
-        });
-      } else {
-        blueprint.closestWall.room.parts.push({
-          width: blueprint.PartWidths[partType],
-          offset: x,
-          type: partType
-        });
-      }
+  if (blueprint.closestWall.distance !== Infinity) {
+    if (blueprint.closestWall.angle == blueprint.VERTICAL) {
+      //TODO: ta bort hårdkodad dörrbredd
+      blueprint.closestWall.room.parts.push({
+        width: blueprint.PartWidths[partType],
+        offset: blueprint.house.y + y,
+        type: partType
+      });
+    } else {
+      blueprint.closestWall.room.parts.push({
+        width: blueprint.PartWidths[partType],
+        offset: x,
+        type: partType
+      });
     }
+  }
 };
 
 blueprint.useToolClick = function(x, y, toolName) {
@@ -303,9 +303,9 @@ blueprint.mouseUpEvent = function(event) {
     for (var i in blueprint.walls) {
       var wall = blueprint.walls[i];
       if ((wall.angle == blueprint.VERTICAL
-           && !(isBetween(wall.pos, blueprint.house.x, blueprint.house.x + blueprint.house.width)))
+            && !(isBetween(wall.pos, blueprint.house.x, blueprint.house.x + blueprint.house.width)))
           || (wall.angle == blueprint.HORIZONTAL
-           && !(isBetween(wall.pos, blueprint.house.y, blueprint.house.y + blueprint.house.height)))) {
+            && !(isBetween(wall.pos, blueprint.house.y, blueprint.house.y + blueprint.house.height)))) {
         blueprint.walls.splice(i,1);
         blueprint.resetView();
       }
@@ -369,45 +369,6 @@ blueprint.highlightWall = function(room) {
   blueprint.context.stroke();
 };
 
-blueprint.resetView = function() {
-  blueprint.context.clearRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
-
-  blueprint.context.fillStyle = "blue";
-  blueprint.context.fillRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
-
-  blueprint.context.beginPath();
-  blueprint.context.strokeStyle = "white";
-
-  blueprint.context.moveTo(blueprint.house.x, blueprint.house.y);
-  blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, blueprint.house.y);
-  blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, blueprint.house.y + blueprint.house.height);
-  blueprint.context.lineTo(blueprint.house.x, blueprint.house.y + blueprint.house.height);
-  blueprint.context.lineTo(blueprint.house.x, blueprint.house.y);
-
-  for (var i in blueprint.walls) {
-    blueprint.drawWall(blueprint.walls[i]);
-  }
-
-  blueprint.context.closePath();
-  blueprint.context.strokeStyle = "white";
-  blueprint.context.lineWidth = 2;
-  blueprint.context.stroke();
-
-  // Stroke the parts
-  blueprint.context.beginPath();
-  blueprint.context.strokeStyle = "white";
-
-  for (var i in blueprint.walls) {
-    blueprint.drawParts(blueprint.walls[i]);
-  }
-
-  blueprint.context.closePath();
-  blueprint.context.strokeStyle = "white";
-  blueprint.context.lineWidth = 1;
-  blueprint.context.stroke();
-
-};
-
 blueprint.drawParts = function(wall) {
 
   for(var i in wall.parts) {
@@ -462,6 +423,9 @@ blueprint.drawWall = function(wall) {
 
     }
     blueprint.context.lineTo(wall.pos, blueprint.house.y + blueprint.house.height);
+  } else if (wall.angle == blueprint.HORIZONTAL) {
+    blueprint.context.moveTo(blueprint.house.x, wall.pos);
+    blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, wall.pos);
   }
 };
 
@@ -470,7 +434,6 @@ blueprint.resetView = function() {
 
   blueprint.context.fillStyle = "blue";
   blueprint.context.fillRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
-
 
   blueprint.context.beginPath();
   blueprint.context.strokeStyle = "white";
@@ -482,17 +445,20 @@ blueprint.resetView = function() {
   blueprint.context.lineTo(blueprint.house.x, blueprint.house.y);
 
   for (var i in blueprint.walls) {
-    var wall = blueprint.walls[i];
-    switch (wall.angle) {
-      case blueprint.VERTICAL:
-        blueprint.context.moveTo(wall.pos, blueprint.house.y);
-        blueprint.context.lineTo(wall.pos, blueprint.house.y + blueprint.house.height);
-        break;
-      case blueprint.HORIZONTAL:
-        blueprint.context.moveTo(blueprint.house.x, wall.pos);
-        blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, wall.pos);
-        break;
-    }
+    blueprint.drawWall(blueprint.walls[i]);
+  }
+
+  blueprint.context.closePath();
+  blueprint.context.strokeStyle = "white";
+  blueprint.context.lineWidth = 2;
+  blueprint.context.stroke();
+
+  // Stroke the parts
+  blueprint.context.beginPath();
+  blueprint.context.strokeStyle = "white";
+
+  for (var i in blueprint.walls) {
+    blueprint.drawParts(blueprint.walls[i]);
   }
 
   blueprint.context.closePath();
