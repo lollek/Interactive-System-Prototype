@@ -236,18 +236,22 @@ blueprint.addWall = function(type) {
 blueprint.addPart = function(x, y, partType) {
   blueprint.checkClosestWall(x, y);
 
+  console.log("addPart: x: " + x + " y: " + y + " bp.house.y: " + blueprint.house.y);
+  
   if (blueprint.closestWall.distance !== Infinity) {
     if (blueprint.closestWall.angle == blueprint.VERTICAL) {
       //TODO: ta bort hårdkodad dörrbredd
       blueprint.closestWall.room.parts.push({
         width: blueprint.PartWidths[partType],
-        offset: blueprint.house.y + y,
+        offset: y - blueprint.house.y - (blueprint.PartWidths[partType] / 2),
         type: partType
       });
-    } else {
+    }
+    else if (blueprint.closestWall.angle == blueprint.HORIZONTAL)
+    {
       blueprint.closestWall.room.parts.push({
         width: blueprint.PartWidths[partType],
-        offset: x,
+        offset: x - blueprint.house.x - (blueprint.PartWidths[partType] / 2),
         type: partType
       });
     }
@@ -262,6 +266,12 @@ blueprint.useToolClick = function(x, y, toolName) {
       break;
     case "window":
       blueprint.addPart(x, y, 1);
+      break;
+    case "verticalWall":
+      blueprint.addWall(blueprint.VERTICAL);
+      break;
+    case "horizontalWall":
+      blueprint.addWall(blueprint.HORIZONTAL);
       break;
   }
   toolbox.selectedTool = undefined;
@@ -374,33 +384,62 @@ blueprint.drawParts = function(wall) {
 
   for(var i in wall.parts) {
     //Draw the 'part' itself
-    blueprint.context.moveTo(wall.pos, //Move to start of arc
-        blueprint.house.y +
-        wall.parts[i].offset +
-        wall.parts[i].width);
+    if(wall.angle == blueprint.VERTICAL) {
+        blueprint.context.moveTo(wall.pos, //Move to start of arc
+                                 blueprint.house.y +
+                                 wall.parts[i].offset +
+                                 wall.parts[i].width);
+    }
+    else if(wall.angle == blueprint.HORIZONTAL) {
+        blueprint.context.moveTo(blueprint.house.x + //Move to start of arc
+                                 wall.parts[i].offset +
+                                 wall.parts[i].width,
+                                 wall.pos);
+    }
 
     switch(wall.parts[i].type) {
       case blueprint.DOOR:
-        //TODO change x , y's so they work for both horizontel and vertical parts.
-        blueprint.context.arc(wall.pos, //Draw arc
-            blueprint.house.y + wall.parts[i].offset,
-            wall.parts[i].width,
-            Math.PI / 2,
-            Math.PI / 3,
-            true); //Clockwise
-        blueprint.context.lineTo(wall.pos, blueprint.house.y + wall.parts[i].offset); //Draw door
-        //TODO: horisontell dörr, ta bort hårdkodade värden
+        if(wall.angle == blueprint.VERTICAL) {            
+            blueprint.context.arc(wall.pos, //Draw arc
+                                  blueprint.house.y + wall.parts[i].offset,
+                                  wall.parts[i].width,
+                                  Math.PI / 2,
+                                  Math.PI / 3,
+                                  true); //Clockwise
+            blueprint.context.lineTo(wall.pos, blueprint.house.y + wall.parts[i].offset); //Draw door
+        }
+        else if(wall.angle == blueprint.HORIZONTAL) {
+            blueprint.context.arc(blueprint.house.x + wall.parts[i].offset, //Draw arc
+                                  wall.pos,
+                                  wall.parts[i].width,
+                                  Math.PI / 2,
+                                  Math.PI / 3,
+                                  true); //Clockwise
+            blueprint.context.lineTo(blueprint.house.x + wall.parts[i].offset, wall.pos); //Draw door
+        }
         break;
       case blueprint.WINDOW:
-        //TODO change x , y's so they work for both horizontel and vertical parts.
-        blueprint.context.lineTo(wall.pos, blueprint.house.y + wall.parts[i].offset); //Draw window
+        if(wall.angle == blueprint.VERTICAL) {
+            blueprint.context.lineTo(wall.pos, blueprint.house.y + wall.parts[i].offset); //Draw window
+        }
+        else if(wall.angle == blueprint.HORIZONTAL) {
+            blueprint.context.lineTo(blueprint.house.x + wall.parts[i].offset, wall.pos); //Draw window
+        }
         break;
     }
 
-    blueprint.context.moveTo(wall.pos, //Skip to end of part
-        blueprint.house.y +
-        wall.parts[i].offset +
-        wall.parts[i].width);
+    if(wall.angle == blueprint.VERTICAL) {
+        blueprint.context.moveTo(wall.pos, //Skip to end of part
+                                 blueprint.house.y +
+                                 wall.parts[i].offset +
+                                 wall.parts[i].width);
+    }
+    else if(wall.angle == blueprint.HORIZONTAL) {
+         blueprint.context.moveTo(blueprint.house.x + //Skip to end of part
+                                  wall.parts[i].offset +
+                                  wall.parts[i].width,
+                                  wall.pos);
+    }
   }
 };
 
@@ -426,6 +465,23 @@ blueprint.drawWall = function(wall) {
     blueprint.context.lineTo(wall.pos, blueprint.house.y + blueprint.house.height);
   } else if (wall.angle == blueprint.HORIZONTAL) {
     blueprint.context.moveTo(blueprint.house.x, wall.pos);
+
+    wall.parts.sort(function(a, b) {
+      return a.offset - b.offset;
+    });
+
+    for(var i in wall.parts) {
+      blueprint.context.lineTo(blueprint.house.x + //Line to part
+                               wall.parts[i].offset,
+                               wall.pos);
+
+      blueprint.context.moveTo(blueprint.house.x + //Skip to end of part
+                               wall.parts[i].offset +
+                               wall.parts[i].width,
+                               wall.pos);
+
+    }
+      
     blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, wall.pos);
   }
 };
