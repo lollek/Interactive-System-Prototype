@@ -464,25 +464,6 @@ blueprint.drawWall = function(wall) {
   }
 };
 
-blueprint.init = function() {
-    var editView = document.getElementById("EditView");
-    blueprint.canvas = document.getElementById("blueprint");
-    blueprint.context = blueprint.canvas.getContext("2d");
-    blueprint.canvas.width = editView.offsetWidth - 400; //Annars pajjar expand buttons! (beror på skärmen)
-    blueprint.canvas.height = editView.offsetHeight;
-
-    blueprint.canvas.addEventListener("mousemove", blueprint.mouseMoveEvent);
-    blueprint.canvas.addEventListener("mousedown", blueprint.mouseDownEvent);
-    blueprint.canvas.addEventListener("mouseup", blueprint.mouseUpEvent);
-
-    blueprint.house = {
-    	x: blueprint.canvas.width/2 - 300,
-    	y: blueprint.canvas.height/2 - 300,
-    	width: 400,
-    	height: 400
-    };
-    blueprint.resetView();
-
 blueprint.resetView = function() {
   blueprint.context.clearRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
 
@@ -523,7 +504,7 @@ blueprint.init = function() {
   var editView = document.getElementById("EditView");
   blueprint.canvas = document.getElementById("blueprint");
   blueprint.context = blueprint.canvas.getContext("2d");
-  blueprint.canvas.width = editView.offsetWidth - 300; //Annars pajjar expand buttons! (beror på skärmen)
+  blueprint.canvas.width = editView.offsetWidth - 400; //Annars pajjar expand buttons! (beror på skärmen)
   blueprint.canvas.height = editView.offsetHeight;
 
   blueprint.canvas.addEventListener("mousemove", blueprint.mouseMoveEvent);
