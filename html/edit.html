@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/css/basics.css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-
+    
     <script src="/js/animation_event.js"></script>
     <script type="text/javascript" src="/js/user_action.js"></script>
-
-      <!-- från master-->
+    
+    <!-- från master-->
     <script src="/js/toolbox.js"></script>
     <script src="/js/edit.js"></script>
-
+    
     <meta charset="UTF-8">
     <title> Edit </title>
   </head>
   
   <body>
-
-  <header onclick="goToFrontpage()">
-      <p>Drömhus</p>
-  </header>
-
-
+    
+    <header onclick="goToFrontpage()">
+      <h1>DRÖMHUS</h1>
+    </header>
+    
     <nav>
       <a href="/html/my_page.html"><button>Start</button></a>
       <button>Dela</button>
       <button>Spara</button>
-        <a href="/html/order.html"><button id="rightmenu">Bestall</button></a>
+      <a href="/html/order.html"><button class="bestall" id="rightmenu">Bestall</button></a>
     </nav>
     <section id="EditView">
-        <canvas id="blueprint"></canvas>
-        <script>blueprint.init();</script>
+      <canvas id="blueprint"></canvas>
+      <script>blueprint.init();</script>
       <div class="EditExpandButton" id="WallsExpBtn">
         <div class='circle-container'>
           <a href='#' class='deg' onclick="toolbox.selectIcon('verticalWall')"><img src='/img/line_vertical.jpg'></a>
@@ -39,8 +39,8 @@
           <a href='#' class='center'><img src='/img/wall_index.jpeg'></a>
         </div>
       </div>
-
-
+      
+      
       <div class="EditExpandButton" id="DoorsExpBtn">
         <div class='circle-container'>
           <a href='#' class='deg'><img src='/img/door1.jpeg'></a>
@@ -62,10 +62,11 @@
         <script src="https://embed.github.com/view/3d/vicel/tdp022-house/master/house3d_2.stl?height=260&width=426"></script>
       </section>
     </section>
-
-
-  <footer></footer>
-  <!-- RÖR EJ -->
-  <script type="text/javascript" src="/js/animation_event.js"></script>
+    
+    <footer>
+      <p>&copy; 2015 Byggarna
+    </footer>
+    <!-- RÖR EJ -->
+    <script type="text/javascript" src="/js/animation_event.js"></script>
   </body>
 </html>

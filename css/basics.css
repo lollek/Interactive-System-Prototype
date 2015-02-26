@@ -1,0 +1,52 @@
+header, footer {
+    background-color: #4288E9;
+    width: 100%;
+
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 20px;
+    padding: 25px 0;
+}
+
+header h1 {
+    font-size: 22px;
+    margin-left: 5%;
+    cursor: pointer;
+}
+
+header h1:hover {
+    cursor: hand;
+}
+
+footer {
+    vertical-align: bottom;
+    text-align: center;
+}
+
+nav {
+    background-color: #5399FA;
+    height: 50px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+nav button {
+    display: block;
+    border-radius: 10px;
+    border: none;
+    background-color: #3177D8;
+
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 16px;
+    padding: 10px;
+
+    cursor: pointer;
+
+    margin: 4px 1%;
+    float: left;
+}
+
+nav .bestall {
+    background-color: rgb(118, 255, 3);
+}
