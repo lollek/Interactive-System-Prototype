@@ -10,7 +10,8 @@ blueprint.walls = [];
 blueprint.closestWall = undefined;
 
 blueprint.isMovingWall = false;
-blueprint.MINWALLOFFSET = 50;
+blueprint.isMovingPart = false;
+blueprint.HIGHLIGHT_OFFSET = 50;
 
 blueprint.INNERWALL = 0;
 blueprint.OUTERWALL = 1;
@@ -101,7 +102,7 @@ blueprint.checkClosestWall = function(x, y) {
     }
   }
 
-  if (distance <= blueprint.MINWALLOFFSET) {
+  if (distance <= blueprint.HIGHLIGHT_OFFSET) {
     blueprint.closestWall = {
       type: type,
       angle: angle,
@@ -191,6 +192,18 @@ blueprint.moveWall = function(x, y) {
   }
 };
 
+blueprint.movePart = function(x, y) {
+  var wall = blueprint.closestWall;
+  var room = wall.room;
+  var i = wall.movingPartIndex;
+  if (room.angle == blueprint.VERTICAL) {
+    room.parts[i].offset = y - blueprint.house.y - room.parts[i].width/2;
+  } else if (room.angle == blueprint.HORIZONTAL) {
+    room.parts[i].offset = x - blueprint.house.x - room.parts[i].width/2;
+  }
+  blueprint.resetView();
+};
+
 blueprint.useToolMove = function(x, y, toolName) {
   var isBetween = function(x, min, max) {
     return (min < x && x < max);
@@ -198,10 +211,13 @@ blueprint.useToolMove = function(x, y, toolName) {
 
   if (isBetween(x, blueprint.house.x, blueprint.house.x + blueprint.house.width)
       && isBetween(y, blueprint.house.y, blueprint.house.y + blueprint.house.height)) {
-    if (toolName == "verticalWall") {
-      blueprint.walls[blueprint.walls.length -1].pos = x;
-    } else if (toolName == "horizontalWall") {
-      blueprint.walls[blueprint.walls.length -1].pos = y;
+    switch (toolName) {
+      case "verticalWall":
+        blueprint.walls[blueprint.walls.length -1].pos = x;
+        break;
+      case "horizontalWall":
+        blueprint.walls[blueprint.walls.length -1].pos = y;
+        break;
     }
     blueprint.resetView();
   }
@@ -261,6 +277,8 @@ blueprint.mouseMoveEvent = function(event) {
 
   if (blueprint.isMovingWall) {
     blueprint.moveWall(x, y);
+  } else if (blueprint.isMovingPart) {
+    blueprint.movePart(x, y);
   } else if (toolbox.selectedTool !== undefined) {
     blueprint.useToolMove(x, y, toolbox.selectedTool);
   } else {
@@ -277,17 +295,45 @@ blueprint.mouseDownEvent = function(event) {
     blueprint.useToolClick(x, y, toolbox.selectedTool);
 
   } else if (blueprint.closestWall !== undefined) {
+    var room = blueprint.closestWall.room;
     blueprint.isMovingWall = true;
-    blueprint.moveWall(x, y);
+
+    for (var i in room.parts) {
+      var part_x;
+      var part_y;
+
+      if (room.angle == blueprint.VERTICAL) {
+        part_x = room.pos;
+        part_y = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.y;
+      } else if (room.angle == blueprint.HORIZONTAL) {
+        part_x = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.x;
+        part_y = room.pos;
+      }
+
+      part_x = Math.abs(part_x - x);
+      part_y = Math.abs(part_y - y);
+
+      if (part_x <= blueprint.HIGHLIGHT_OFFSET && part_y <= blueprint.HIGHLIGHT_OFFSET) {
+        blueprint.isMovingWall = false;
+        blueprint.isMovingPart = true;
+        blueprint.closestWall.movingPartIndex = i;
+        break;
+      }
+    }
+
+    if (blueprint.isMovingWall) {
+      blueprint.moveWall(x, y);
+    }
   }
 };
 
 blueprint.mouseUpEvent = function(event) {
+  var isBetween = function(x, min, max) {
+    return (min < x && x < max);
+  }
+
   if (blueprint.isMovingWall) {
     blueprint.isMovingWall = false;
-    var isBetween = function(x, min, max) {
-      return (min < x && x < max);
-    }
 
     for (var i in blueprint.walls) {
       var wall = blueprint.walls[i];
@@ -298,6 +344,20 @@ blueprint.mouseUpEvent = function(event) {
         blueprint.walls.splice(i,1);
         blueprint.resetView();
       }
+    }
+
+  } else if (blueprint.isMovingPart) {
+    var wall = blueprint.closestWall;
+    var room = wall.room;
+    var i = wall.movingPartIndex;
+    blueprint.isMovingPart = false;
+
+    if ((room.angle == blueprint.VERTICAL
+         && !isBetween(room.parts[i].offset, 0, blueprint.house.height))
+        ||(room.angle == blueprint.HORIZONTAL
+         && !isBetween(room.parts[i].offset, 0, blueprint.house.width))) {
+      room.parts.splice(i, 1);
+      blueprint.resetView();
     }
   }
 };
