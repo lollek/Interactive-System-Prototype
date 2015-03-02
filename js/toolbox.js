@@ -1,14 +1,14 @@
 var toolbox = {};
-toolbox.selectedTool = undefined;
+toolbox.currentlyDragging = undefined;
 
-toolbox.selectIcon = function(iconName) {
-  toolbox.selectedTool = iconName;
-  switch (toolbox.selectedTool) {
-    case "verticalWall":
-      blueprint.addWall(blueprint.VERTICAL);
-      break;
-    case "horizontalWall":
-      blueprint.addWall(blueprint.HORIZONTAL);
-      break;
-    }
+toolbox.drag = function(icon) {
+  toolbox.currentlyDragging = icon;
+  switch (toolbox.currentlyDragging) {
+  case "verticalWall":
+    blueprint.addWall(blueprint.VERTICAL);
+    break;
+  case "horizontalWall":
+    blueprint.addWall(blueprint.HORIZONTAL);
+    break;
+  }
 };
