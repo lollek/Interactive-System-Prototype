@@ -527,9 +527,6 @@ blueprint.drawWall = function(wall) {
 blueprint.resetView = function() {
   blueprint.context.clearRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
 
-  blueprint.context.fillStyle = "blue";
-  blueprint.context.fillRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
-
   blueprint.context.beginPath();
   blueprint.context.strokeStyle = "white";
 

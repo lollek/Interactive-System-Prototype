@@ -95,7 +95,7 @@ aside input[type="range"] {
 }
 
 .radio_buttons article p {
-    display: inline;
+    display: inline-block;
     margin-left: -45%;
 }
 
@@ -172,6 +172,7 @@ section section article img {
 }
 
 p {
+    font-size: 18px;
     color: #666;
 }
 
