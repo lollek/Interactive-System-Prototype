@@ -547,18 +547,30 @@ blueprint.onDragOverEvent = function(event) {
   var isBetween = function(x, min, max) {
     return (min < x && x < max);
   }
+  var isInsideCanvas = function() {
+    return (isBetween(x, blueprint.house.x, blueprint.house.x + blueprint.house.width)
+      && isBetween(y, blueprint.house.y, blueprint.house.y + blueprint.house.height));
+  };
 
-  if (isBetween(x, blueprint.house.x, blueprint.house.x + blueprint.house.width)
-      && isBetween(y, blueprint.house.y, blueprint.house.y + blueprint.house.height)) {
-    switch (toolbox.currentlyDragging) {
-      case "verticalWall":
+  switch (toolbox.currentlyDragging) {
+    case "verticalWall":
+      if (isInsideCanvas()) {
         blueprint.walls[blueprint.walls.length -1].pos = x;
-        break;
-      case "horizontalWall":
+        blueprint.resetView();
+      }
+      break;
+    case "horizontalWall":
+      if (isInsideCanvas()) {
         blueprint.walls[blueprint.walls.length -1].pos = y;
-        break;
-    }
-    blueprint.resetView();
+        blueprint.resetView();
+      }
+      break;
+    case "door":case "window":
+      var oldWall = blueprint.closestWall;
+      blueprint.checkClosestWall(x, y);
+      var newWall = blueprint.closestWall;
+      console.log(oldWall == newWall);
+      break;
   }
 };
 
