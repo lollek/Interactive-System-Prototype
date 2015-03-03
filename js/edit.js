@@ -29,6 +29,37 @@ blueprint.VERTICAL = 1;
 
 blueprint.PartWidths = [50, 50]; // Index 0 == DOOR as DOOR == 0 ^
 
+blueprint.checkClosestPart = function(x, y) {
+  if (blueprint.closestWall === undefined)
+    return;
+
+  var room = blueprint.closestWall.room;
+  blueprint.isMovingWall = true;
+
+  for (var i in room.parts) {
+    var part_x;
+    var part_y;
+
+    if (room.angle == blueprint.VERTICAL) {
+      part_x = room.pos;
+      part_y = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.y;
+    } else if (room.angle == blueprint.HORIZONTAL) {
+      part_x = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.x;
+      part_y = room.pos;
+    }
+
+    part_x = Math.abs(part_x - x);
+    part_y = Math.abs(part_y - y);
+
+    if (part_x <= blueprint.HIGHLIGHT_OFFSET && part_y <= blueprint.HIGHLIGHT_OFFSET) {
+      blueprint.isMovingWall = false;
+      blueprint.isMovingPart = true;
+      blueprint.closestWall.movingPartIndex = i;
+      break;
+    }
+  }
+};
+
 blueprint.checkClosestWall = function(x, y) {
   var isInHouseX = false;
   var isInHouseY = false;
@@ -192,34 +223,68 @@ blueprint.moveWall = function(x, y) {
   }
 };
 
-blueprint.movePart = function(x, y) {
-  var wall = blueprint.closestWall;
-  var room = wall.room;
-  var i = wall.movingPartIndex;
-  if (room.angle == blueprint.VERTICAL) {
-    room.parts[i].offset = y - blueprint.house.y - room.parts[i].width/2;
-  } else if (room.angle == blueprint.HORIZONTAL) {
-    room.parts[i].offset = x - blueprint.house.x - room.parts[i].width/2;
-  }
-  blueprint.resetView();
-};
+blueprint.movePart = function(x, y, partType) {
+  var oldWall = blueprint.closestWall;
+  var oldRoom = oldWall ? oldWall.room : undefined;
 
-blueprint.useToolMove = function(x, y, toolName) {
-  var isBetween = function(x, min, max) {
-    return (min < x && x < max);
-  }
+  blueprint.closestWall = undefined;
+  blueprint.checkClosestWall(x, y);
 
-  if (isBetween(x, blueprint.house.x, blueprint.house.x + blueprint.house.width)
-      && isBetween(y, blueprint.house.y, blueprint.house.y + blueprint.house.height)) {
-    switch (toolName) {
-      case "verticalWall":
-        blueprint.walls[blueprint.walls.length -1].pos = x;
-        break;
-      case "horizontalWall":
-        blueprint.walls[blueprint.walls.length -1].pos = y;
-        break;
+  var newWall = blueprint.closestWall;
+  var newRoom = newWall ? newWall.room : undefined;
+
+  if (oldRoom == newRoom && newRoom !== undefined) {
+    blueprint.checkClosestPart(x, y);
+
+    var i = blueprint.closestWall.movingPartIndex;
+    if (i === undefined)
+      return;
+
+    var room = oldRoom;
+    if (room.angle == blueprint.VERTICAL) {
+      room.parts[i].offset = y - blueprint.house.y - room.parts[i].width/2;
+    } else if (room.angle == blueprint.HORIZONTAL) {
+      room.parts[i].offset = x - blueprint.house.x - room.parts[i].width/2;
     }
     blueprint.resetView();
+
+  } else /* oldRoom != newRoom || newRoom == oldRoom == undefined */ {
+    var doReset = false;
+
+    if (oldWall !== undefined && oldRoom.parts !== undefined) {
+      oldRoom.parts.pop();
+      doReset = true;
+    }
+
+    if (newWall !== undefined && newRoom.parts !== undefined) {
+      var offset;
+      switch (newWall.angle) {
+        case blueprint.VERTICAL:
+          offset = y - blueprint.house.y - (blueprint.PartWidths[partType] / 2);
+          break;
+        case blueprint.HORIZONTAL:
+          offset = x - blueprint.house.x - (blueprint.PartWidths[partType] / 2);
+          break;
+      }
+
+      newWall.room.parts.push({
+        width: blueprint.PartWidths[partType],
+        offset: offset,
+        type: partType
+      });
+
+      newWall.movingPartIndex = newWall.room.parts.length -1;
+      doReset = true;
+    }
+
+    if (oldWall !== undefined && newWall !== undefined
+        && oldWall.movingPartIndex !== undefined) {
+      newWall.movingPartIndex = oldWall.movingPartIndex;
+    }
+
+    if (doReset) {
+      blueprint.resetView();
+    }
   }
 };
 
@@ -237,39 +302,6 @@ blueprint.addWall = function(type) {
   });
 };
 
-blueprint.addPart = function(x, y, partType) {
-  blueprint.checkClosestWall(x, y);
-
-  if (blueprint.closestWall !== undefined) {
-    if (blueprint.closestWall.angle == blueprint.VERTICAL) {
-      blueprint.closestWall.room.parts.push({
-        width: blueprint.PartWidths[partType],
-        offset: y - blueprint.house.y - (blueprint.PartWidths[partType] / 2),
-        type: partType
-      });
-    } else if (blueprint.closestWall.angle == blueprint.HORIZONTAL) {
-      blueprint.closestWall.room.parts.push({
-        width: blueprint.PartWidths[partType],
-        offset: x - blueprint.house.x - (blueprint.PartWidths[partType] / 2),
-        type: partType
-      });
-    }
-    blueprint.resetView();
-  }
-};
-
-blueprint.useToolClick = function(x, y, toolName) {
-  switch (toolName) {
-    case "door":
-      blueprint.addPart(x, y, 0);
-      break;
-    case "window":
-      blueprint.addPart(x, y, 1);
-      break;
-  }
-  toolbox.selectedTool = undefined;
-};
-
 blueprint.mouseMoveEvent = function(event) {
   var rect = blueprint.canvas.getBoundingClientRect();
   var x = ~~(event.clientX - rect.left);
@@ -278,9 +310,14 @@ blueprint.mouseMoveEvent = function(event) {
   if (blueprint.isMovingWall) {
     blueprint.moveWall(x, y);
   } else if (blueprint.isMovingPart) {
-    blueprint.movePart(x, y);
-  } else if (toolbox.selectedTool !== undefined) {
-    blueprint.useToolMove(x, y, toolbox.selectedTool);
+    if (blueprint.closestWall === undefined
+        || blueprint.closestWall.movingPartIndex === undefined) {
+      blueprint.movePart(x, y, undefined);
+    } else {
+      var i = blueprint.closestWall.movingPartIndex;
+      var partType = blueprint.closestWall.room.parts[i].type;
+      blueprint.movePart(x, y, partType);
+    }
   } else {
     blueprint.mouseMoveEventFindClosestWall(x, y);
   }
@@ -291,39 +328,9 @@ blueprint.mouseDownEvent = function(event) {
   var x = ~~(event.clientX - rect.left);
   var y = event.clientY - rect.top;
 
-  if (toolbox.selectedTool !== undefined) {
-    blueprint.useToolClick(x, y, toolbox.selectedTool);
-
-  } else if (blueprint.closestWall !== undefined) {
-    var room = blueprint.closestWall.room;
-    blueprint.isMovingWall = true;
-
-    for (var i in room.parts) {
-      var part_x;
-      var part_y;
-
-      if (room.angle == blueprint.VERTICAL) {
-        part_x = room.pos;
-        part_y = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.y;
-      } else if (room.angle == blueprint.HORIZONTAL) {
-        part_x = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.x;
-        part_y = room.pos;
-      }
-
-      part_x = Math.abs(part_x - x);
-      part_y = Math.abs(part_y - y);
-
-      if (part_x <= blueprint.HIGHLIGHT_OFFSET && part_y <= blueprint.HIGHLIGHT_OFFSET) {
-        blueprint.isMovingWall = false;
-        blueprint.isMovingPart = true;
-        blueprint.closestWall.movingPartIndex = i;
-        break;
-      }
-    }
-
-    if (blueprint.isMovingWall) {
-      blueprint.moveWall(x, y);
-    }
+  blueprint.checkClosestPart(x, y);
+  if (blueprint.isMovingWall) {
+    blueprint.moveWall(x, y);
   }
 };
 
@@ -559,25 +566,67 @@ blueprint.resetView = function() {
   blueprint.context.stroke();
 };
 
+
 blueprint.initInnerWalls = function() {
-    blueprint.walls.push({
-        angle: blueprint.VERTICAL,
-        pos: blueprint.house.x + 300,
-        parts: []
-    });
+  blueprint.walls.push({
+    angle: blueprint.VERTICAL,
+    pos: blueprint.house.x + 300,
+    parts: []
+  });
 
-    blueprint.addPart(blueprint.house.x + 300, blueprint.house.y + 50, 0);
-    blueprint.addPart(blueprint.house.x + 300, blueprint.house.y + 300, 0);
-    
-    blueprint.walls.push({
-        angle: blueprint.HORIZONTAL,
-        pos: blueprint.house.y + 200,
-        parts: []
-    });
+  blueprint.addPart(blueprint.house.x + 300, blueprint.house.y + 50, 0);
+  blueprint.addPart(blueprint.house.x + 300, blueprint.house.y + 300, 0);
 
-    blueprint.addPart(blueprint.house.x + 50, blueprint.house.y + 200, 0);
-    blueprint.addPart(blueprint.house.x + 200, blueprint.house.y + 200, 1);
-    blueprint.addPart(blueprint.house.x + 350, blueprint.house.y + 200, 1);
+  blueprint.walls.push({
+    angle: blueprint.HORIZONTAL,
+    pos: blueprint.house.y + 200,
+    parts: []
+  });
+
+  blueprint.addPart(blueprint.house.x + 50, blueprint.house.y + 200, 0);
+  blueprint.addPart(blueprint.house.x + 200, blueprint.house.y + 200, 1);
+  blueprint.addPart(blueprint.house.x + 350, blueprint.house.y + 200, 1);
+};
+
+blueprint.onDropEvent = function(event) {
+  toolbox.currentlyDragging = undefined;
+  blueprint.isMovingPart = false;
+};
+
+blueprint.onDragOverEvent = function(event) {
+  var rect = blueprint.canvas.getBoundingClientRect();
+  var x = ~~(event.clientX - rect.left);
+  var y = event.clientY - rect.top;
+  event.preventDefault();
+
+  var isInsideCanvas = function() {
+    var isBetween = function(x, min, max) { return (min < x && x < max); };
+    return (isBetween(x, blueprint.house.x, blueprint.house.x + blueprint.house.width)
+      && isBetween(y, blueprint.house.y, blueprint.house.y + blueprint.house.height));
+  };
+
+  switch (toolbox.currentlyDragging) {
+    case "verticalWall":
+      if (isInsideCanvas()) {
+        blueprint.walls[blueprint.walls.length -1].pos = x;
+        blueprint.resetView();
+      }
+      break;
+    case "horizontalWall":
+      if (isInsideCanvas()) {
+        blueprint.walls[blueprint.walls.length -1].pos = y;
+        blueprint.resetView();
+      }
+      break;
+    case "door": case "window":
+      var partType;
+      switch (toolbox.currentlyDragging) {
+        case "door": partType = blueprint.DOOR; break;
+        case "window": partType = blueprint.WINDOW; break;
+      }
+      blueprint.movePart(x, y, partType);
+      break;
+  }
 };
 
 blueprint.init = function() {
@@ -590,6 +639,8 @@ blueprint.init = function() {
   blueprint.canvas.addEventListener("mousemove", blueprint.mouseMoveEvent);
   blueprint.canvas.addEventListener("mousedown", blueprint.mouseDownEvent);
   blueprint.canvas.addEventListener("mouseup", blueprint.mouseUpEvent);
+  blueprint.canvas.ondrop = blueprint.onDropEvent;
+  blueprint.canvas.ondragover = blueprint.onDragOverEvent;
 
   blueprint.house = {
     x: blueprint.canvas.width/2 - 300,
