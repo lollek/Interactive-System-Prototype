@@ -559,6 +559,35 @@ blueprint.resetView = function() {
   blueprint.context.stroke();
 };
 
+blueprint.initInnerWalls = function() {
+    blueprint.walls.push({
+        angle: blueprint.VERTICAL,
+        pos: blueprint.house.x + 300,
+        parts: []
+    });
+
+    blueprint.addPart(blueprint.house.x + 300, blueprint.house.y + 50, 0);
+    blueprint.addPart(blueprint.house.x + 300, blueprint.house.y + 300, 0);
+    
+           /* 
+            {
+                width: blueprint.PartWidths[1],
+                offset:  blueprint.house.y - (blueprint.PartWidths[1] / 2),
+                type: 0
+            }
+        
+*/
+    blueprint.walls.push({
+        angle: blueprint.HORIZONTAL,
+        pos: blueprint.house.y + 200,
+        parts: []
+    });
+
+    blueprint.addPart(blueprint.house.x + 50, blueprint.house.y + 200, 0);
+    blueprint.addPart(blueprint.house.x + 200, blueprint.house.y + 200, 1);
+    blueprint.addPart(blueprint.house.x + 350, blueprint.house.y + 200, 1);
+};
+
 blueprint.init = function() {
   var editView = document.getElementById("EditView");
   blueprint.canvas = document.getElementById("blueprint");
@@ -576,5 +605,8 @@ blueprint.init = function() {
     width: 400,
     height: 400
   };
+  
+  blueprint.initInnerWalls();
+
   blueprint.resetView();
 };
