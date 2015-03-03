@@ -303,6 +303,7 @@ blueprint.mouseDownEvent = function(event) {
   } else if (blueprint.closestWall !== undefined) {
     var room = blueprint.closestWall.room;
     blueprint.isMovingWall = true;
+    blueprint.saveState(); //Save state of walls when starting to move parts/walls
 
     for (var i in room.parts) {
       var part_x;
@@ -339,7 +340,7 @@ blueprint.mouseUpEvent = function(event) {
   }
 
   if (blueprint.isMovingWall) {
-    blueprint.isMovingWall = false;
+    blueprint.isMovingWall = false;    
 
     for (var i in blueprint.walls) {
       var wall = blueprint.walls[i];
@@ -568,17 +569,25 @@ blueprint.resetView = function() {
   blueprint.context.stroke();
 };
 
-blueprint.saveState = function() {//Call before things are added
-  console.log("saveState() " + JSON.stringify(blueprint.walls));
-  blueprint.undoStack.push(JSON.stringify(blueprint.walls));
+blueprint.saveState = function() {//Call before things are added or moved  
+  blueprint.undoStack.push(JSON.stringify(
+      {"walls": blueprint.walls, "house": blueprint.house}));
+
+  //DEBUG
+  /*
+  console.log("saveState() " +
+              JSON.stringify({"walls": blueprint.walls, "house": blueprint.house}));
+  */
 };
 
 blueprint.loadState = function() {//Resets the state of walls to previous save
-  var wallsJson = blueprint.undoStack.pop();
-  console.log("loadState() " + wallsJson);
+  var stateJson = blueprint.undoStack.pop();
+  //console.log("loadState() " + stateJson);
 
-  if(wallsJson) {
-    blueprint.walls = JSON.parse(wallsJson);
+  if(stateJson) {
+     var state = JSON.parse(stateJson);
+     blueprint.walls = state.walls;
+     blueprint.house = state.house;
   }
   blueprint.resetView();
 };
