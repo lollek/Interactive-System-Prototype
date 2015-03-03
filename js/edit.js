@@ -309,15 +309,17 @@ blueprint.mouseMoveEvent = function(event) {
 
   if (blueprint.isMovingWall) {
     blueprint.moveWall(x, y);
+
   } else if (blueprint.isMovingPart) {
-    if (blueprint.closestWall === undefined
-        || blueprint.closestWall.movingPartIndex === undefined) {
-      blueprint.movePart(x, y, undefined);
-    } else {
+    var partType = undefined;
+
+    if (blueprint.closestWall !== undefined
+        && blueprint.closestWall.movingPartIndex !== undefined) {
       var i = blueprint.closestWall.movingPartIndex;
-      var partType = blueprint.closestWall.room.parts[i].type;
-      blueprint.movePart(x, y, partType);
+      partType = blueprint.closestWall.room.parts[i].type;
     }
+    blueprint.movePart(x, y, partType);
+
   } else {
     blueprint.mouseMoveEventFindClosestWall(x, y);
   }
@@ -571,21 +573,41 @@ blueprint.initInnerWalls = function() {
   blueprint.walls.push({
     angle: blueprint.VERTICAL,
     pos: blueprint.house.x + 300,
-    parts: []
+    parts: [
+      {
+        width: blueprint.PartWidths[0],
+        offset: 50 - (blueprint.PartWidths[0] /2),
+        type: 0
+      },
+      {
+        width: blueprint.PartWidths[0],
+        offset: 300 - (blueprint.PartWidths[0] /2),
+        type: 0
+      }
+    ]
   });
-
-  blueprint.addPart(blueprint.house.x + 300, blueprint.house.y + 50, 0);
-  blueprint.addPart(blueprint.house.x + 300, blueprint.house.y + 300, 0);
 
   blueprint.walls.push({
     angle: blueprint.HORIZONTAL,
     pos: blueprint.house.y + 200,
-    parts: []
+    parts: [
+      {
+        width: blueprint.PartWidths[0],
+        offset: 50 - (blueprint.PartWidths[0] /2),
+        type: 0
+      },
+      {
+        width: blueprint.PartWidths[1],
+        offset: 200 - (blueprint.PartWidths[1] /2),
+        type: 1
+      },
+      {
+        width: blueprint.PartWidths[1],
+        offset: 350 - (blueprint.PartWidths[1] /2),
+        type: 1
+      }
+    ]
   });
-
-  blueprint.addPart(blueprint.house.x + 50, blueprint.house.y + 200, 0);
-  blueprint.addPart(blueprint.house.x + 200, blueprint.house.y + 200, 1);
-  blueprint.addPart(blueprint.house.x + 350, blueprint.house.y + 200, 1);
 };
 
 blueprint.onDropEvent = function(event) {
@@ -648,7 +670,7 @@ blueprint.init = function() {
     width: 400,
     height: 400
   };
-  
+
   blueprint.initInnerWalls();
 
   blueprint.resetView();
