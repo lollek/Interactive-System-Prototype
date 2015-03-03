@@ -30,6 +30,7 @@ blueprint.VERTICAL = 1;
 blueprint.PartWidths = [50, 50]; // Index 0 == DOOR as DOOR == 0 ^
 
 blueprint.undoStack = [];
+blueprint.stackPointer = 0;
 
 blueprint.checkClosestWall = function(x, y) {
   var isInHouseX = false;
@@ -232,8 +233,6 @@ blueprint.addWall = function(type) {
     case blueprint.HORIZONTAL: pos = blueprint.house.y; break;
   }
 
-  blueprint.saveState(); //Push state of walls to undoStack
-
   blueprint.walls.push({
     angle: type,
     pos: pos,
@@ -244,9 +243,7 @@ blueprint.addWall = function(type) {
 blueprint.addPart = function(x, y, partType) {
   blueprint.checkClosestWall(x, y);
 
-  if (blueprint.closestWall !== undefined) {
-    blueprint.saveState(); //Push state of walls to undoStack
-      
+  if (blueprint.closestWall !== undefined) {    
     if (blueprint.closestWall.angle == blueprint.VERTICAL) {
       blueprint.closestWall.room.parts.push({
         width: blueprint.PartWidths[partType],
@@ -272,7 +269,8 @@ blueprint.useToolClick = function(x, y, toolName) {
     case "window":
       blueprint.addPart(x, y, 1);
       break;
-  }  
+  }
+  blueprint.saveState(); //Save state when added object
   toolbox.selectedTool = undefined;
 };
 
@@ -302,9 +300,8 @@ blueprint.mouseDownEvent = function(event) {
 
   } else if (blueprint.closestWall !== undefined) {
     var room = blueprint.closestWall.room;
-    blueprint.isMovingWall = true;
-    blueprint.saveState(); //Save state of walls when starting to move parts/walls
-
+    blueprint.isMovingWall = true;    
+      
     for (var i in room.parts) {
       var part_x;
       var part_y;
@@ -339,7 +336,7 @@ blueprint.mouseUpEvent = function(event) {
     return (min < x && x < max);
   }
 
-  if (blueprint.isMovingWall) {
+  if (blueprint.isMovingWall) {    
     blueprint.isMovingWall = false;    
 
     for (var i in blueprint.walls) {
@@ -352,6 +349,7 @@ blueprint.mouseUpEvent = function(event) {
         blueprint.resetView();
       }
     }
+    blueprint.saveState(); //Save state of walls when done moving wall
 
   } else if (blueprint.isMovingPart) {
     var wall = blueprint.closestWall;
@@ -366,6 +364,7 @@ blueprint.mouseUpEvent = function(event) {
       room.parts.splice(i, 1);
       blueprint.resetView();
     }
+    blueprint.saveState(); //Save state of walls when done moving part
   }
 };
 
@@ -569,26 +568,46 @@ blueprint.resetView = function() {
   blueprint.context.stroke();
 };
 
-blueprint.saveState = function() {//Call before things are added or moved  
-  blueprint.undoStack.push(JSON.stringify(
+blueprint.saveState = function() {//Call before things are added or moved
+  if(blueprint.undoStack[blueprint.stackPointer]) {
+      blueprint.stackPointer += 1;
+  }
+    
+  blueprint.undoStack[blueprint.stackPointer] = (JSON.stringify(
       {"walls": blueprint.walls, "house": blueprint.house}));
-
-  //DEBUG
-  /*
-  console.log("saveState() " +
-              JSON.stringify({"walls": blueprint.walls, "house": blueprint.house}));
-  */
+    
+  blueprint.undoStack = blueprint.undoStack.slice(0, blueprint.stackPointer + 1);
 };
 
-blueprint.loadState = function() {//Resets the state of walls to previous save
-  var stateJson = blueprint.undoStack.pop();
-  //console.log("loadState() " + stateJson);
+blueprint.loadState = function() {//Resets the state of walls to previous save    
+  if(!blueprint.undoStack[blueprint.stackPointer]) {
+    blueprint.stackPointer -= 1;
+  }
 
+  if(blueprint.stackPointer > 0) {
+    blueprint.stackPointer -= 1;
+  }
+    
+  var stateJson = blueprint.undoStack[blueprint.stackPointer];
+  
   if(stateJson) {
      var state = JSON.parse(stateJson);
      blueprint.walls = state.walls;
      blueprint.house = state.house;
   }
+  blueprint.resetView();
+};
+
+blueprint.forwardState = function() {//Call to return to state before undo
+  var stateJson = blueprint.undoStack[blueprint.stackPointer + 1];
+  
+  if(stateJson) {
+    blueprint.stackPointer += 1;
+    var state = JSON.parse(stateJson);
+    blueprint.walls = state.walls;
+    blueprint.house = state.house;    
+  }
+  
   blueprint.resetView();
 };
 
@@ -610,4 +629,5 @@ blueprint.init = function() {
     height: 400
   };
   blueprint.resetView();
+  blueprint.saveState();
 };

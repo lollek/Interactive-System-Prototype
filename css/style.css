@@ -112,6 +112,12 @@ section h2 {
     float: right;
 }
 
+#EditBtn {
+    top: 350px;
+    right: 0px;
+    position: absolute;
+}
+
 #WallsExpBtn {
     top: 0px;
 }
