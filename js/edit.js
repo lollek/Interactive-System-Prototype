@@ -29,6 +29,37 @@ blueprint.VERTICAL = 1;
 
 blueprint.PartWidths = [50, 50]; // Index 0 == DOOR as DOOR == 0 ^
 
+blueprint.checkClosestPart = function(x, y) {
+  if (blueprint.closestWall === undefined)
+    return;
+
+  var room = blueprint.closestWall.room;
+  blueprint.isMovingWall = true;
+
+  for (var i in room.parts) {
+    var part_x;
+    var part_y;
+
+    if (room.angle == blueprint.VERTICAL) {
+      part_x = room.pos;
+      part_y = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.y;
+    } else if (room.angle == blueprint.HORIZONTAL) {
+      part_x = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.x;
+      part_y = room.pos;
+    }
+
+    part_x = Math.abs(part_x - x);
+    part_y = Math.abs(part_y - y);
+
+    if (part_x <= blueprint.HIGHLIGHT_OFFSET && part_y <= blueprint.HIGHLIGHT_OFFSET) {
+      blueprint.isMovingWall = false;
+      blueprint.isMovingPart = true;
+      blueprint.closestWall.movingPartIndex = i;
+      break;
+    }
+  }
+};
+
 blueprint.checkClosestWall = function(x, y) {
   var isInHouseX = false;
   var isInHouseY = false;
@@ -192,16 +223,56 @@ blueprint.moveWall = function(x, y) {
   }
 };
 
-blueprint.movePart = function(wall, x, y) {
-  console.log(wall);
-  var room = wall.room;
-  var i = wall.movingPartIndex;
-  if (room.angle == blueprint.VERTICAL) {
-    room.parts[i].offset = y - blueprint.house.y - room.parts[i].width/2;
-  } else if (room.angle == blueprint.HORIZONTAL) {
-    room.parts[i].offset = x - blueprint.house.x - room.parts[i].width/2;
+blueprint.movePart = function(x, y, partType) {
+  var oldWall = blueprint.closestWall;
+  var oldRoom = oldWall ? oldWall.room : undefined;
+
+  blueprint.closestWall = undefined;
+  blueprint.checkClosestWall(x, y);
+
+  var newWall = blueprint.closestWall;
+  var newRoom = newWall ? newWall.room : undefined;
+
+  if (oldRoom == newRoom && newRoom !== undefined) {
+    blueprint.checkClosestPart(x, y);
+
+    var i = blueprint.closestWall.movingPartIndex;
+    if (i === undefined)
+      return;
+
+    var room = oldRoom;
+    if (room.angle == blueprint.VERTICAL) {
+      room.parts[i].offset = y - blueprint.house.y - room.parts[i].width/2;
+    } else if (room.angle == blueprint.HORIZONTAL) {
+      room.parts[i].offset = x - blueprint.house.x - room.parts[i].width/2;
+    }
+    blueprint.resetView();
+
+  } else /* oldRoom != newRoom || newRoom == oldRoom == undefined */ {
+    if (oldWall !== undefined && oldRoom.parts !== undefined) {
+      oldRoom.parts.pop();
+      blueprint.resetView();
+    }
+    if (newWall !== undefined && newRoom.parts !== undefined) {
+      var offset;
+      switch (newWall.angle) {
+        case blueprint.VERTICAL:
+          offset = y - blueprint.house.y - (blueprint.PartWidths[partType] / 2);
+          break;
+        case blueprint.HORIZONTAL:
+          offset = x - blueprint.house.x - (blueprint.PartWidths[partType] / 2);
+          break;
+      }
+
+      newWall.room.parts.push({
+        width: blueprint.PartWidths[partType],
+        offset: offset,
+        type: partType
+      });
+
+      blueprint.resetView();
+    }
   }
-  blueprint.resetView();
 };
 
 blueprint.addWall = function(type) {
@@ -218,26 +289,6 @@ blueprint.addWall = function(type) {
   });
 };
 
-blueprint.addPart = function(wall, x, y, partType) {
-  var offset;
-  switch (wall.angle) {
-    case blueprint.VERTICAL:
-      offset = y - blueprint.house.y - (blueprint.PartWidths[partType] / 2);
-      break;
-    case blueprint.HORIZONTAL:
-      offset = x - blueprint.house.x - (blueprint.PartWidths[partType] / 2);
-      break;
-  }
-
-  wall.room.parts.push({
-    width: blueprint.PartWidths[partType],
-    offset: offset,
-    type: partType
-  });
-
-  blueprint.resetView();
-};
-
 blueprint.mouseMoveEvent = function(event) {
   var rect = blueprint.canvas.getBoundingClientRect();
   var x = ~~(event.clientX - rect.left);
@@ -246,7 +297,11 @@ blueprint.mouseMoveEvent = function(event) {
   if (blueprint.isMovingWall) {
     blueprint.moveWall(x, y);
   } else if (blueprint.isMovingPart) {
-    blueprint.movePart(blueprint.closestWall, x, y);
+    var i = blueprint.closestWall.movingPartIndex;
+    console.log(blueprint.closestWall.room.parts);
+    console.log(i);
+    var partType = blueprint.closestWall.room.parts[i].type;
+    blueprint.movePart(x, y, partType);
   } else {
     blueprint.mouseMoveEventFindClosestWall(x, y);
   }
@@ -257,36 +312,9 @@ blueprint.mouseDownEvent = function(event) {
   var x = ~~(event.clientX - rect.left);
   var y = event.clientY - rect.top;
 
-  if (blueprint.closestWall !== undefined) {
-    var room = blueprint.closestWall.room;
-    blueprint.isMovingWall = true;
-
-    for (var i in room.parts) {
-      var part_x;
-      var part_y;
-
-      if (room.angle == blueprint.VERTICAL) {
-        part_x = room.pos;
-        part_y = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.y;
-      } else if (room.angle == blueprint.HORIZONTAL) {
-        part_x = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.x;
-        part_y = room.pos;
-      }
-
-      part_x = Math.abs(part_x - x);
-      part_y = Math.abs(part_y - y);
-
-      if (part_x <= blueprint.HIGHLIGHT_OFFSET && part_y <= blueprint.HIGHLIGHT_OFFSET) {
-        blueprint.isMovingWall = false;
-        blueprint.isMovingPart = true;
-        blueprint.closestWall.movingPartIndex = i;
-        break;
-      }
-    }
-
-    if (blueprint.isMovingWall) {
-      blueprint.moveWall(x, y);
-    }
+  blueprint.checkClosestPart(x, y);
+  if (blueprint.isMovingWall) {
+    blueprint.moveWall(x, y);
   }
 };
 
@@ -526,9 +554,8 @@ blueprint.resetView = function() {
 };
 
 blueprint.onDropEvent = function(event) {
-  switch (blueprint.currentlyDragging) {
-  }
   toolbox.currentlyDragging = undefined;
+  blueprint.isMovingPart = false;
 };
 
 blueprint.onDragOverEvent = function(event) {
@@ -557,32 +584,12 @@ blueprint.onDragOverEvent = function(event) {
       }
       break;
     case "door": case "window":
-      var oldWall = blueprint.closestWall;
-      var oldRoom = oldWall ? oldWall.room : undefined;
-
-      blueprint.closestWall = undefined;
-      blueprint.checkClosestWall(x, y);
-      var newWall = blueprint.closestWall;
-      var newRoom = newWall ? newWall.room : undefined;
-
-      if (oldRoom == newRoom && newRoom !== undefined) {
-        newWall.movingPartIndex = newRoom.parts.length -1;
-        blueprint.movePart(newWall, x, y);
-        blueprint.resetView();
-
-      } else /* oldRoom != newRoom || newRoom == oldRoom == undefined */ {
-        if (oldWall !== undefined) {
-          oldRoom.parts.pop();
-          blueprint.resetView();
-        }
-        if (newWall !== undefined) {
-          if (toolbox.currentlyDragging == "door") {
-            blueprint.addPart(newWall, x, y, blueprint.DOOR);
-          } else if (toolbox.currentlyDragging == "window") {
-            blueprint.addPart(newWall, x, y, blueprint.WINDOW);
-          }
-        }
+      var partType;
+      switch (toolbox.currentlyDragging) {
+        case "door": partType = blueprint.DOOR; break;
+        case "window": partType = blueprint.WINDOW; break;
       }
+      blueprint.movePart(x, y, partType);
       break;
   }
 };
