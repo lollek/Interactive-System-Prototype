@@ -9,11 +9,10 @@ body section {
     width: 100%;
     text-align: center;
     background: url("../img/family-House.jpg") no-repeat;
-    background-size: auto 100%;
-}
-
-body .bg-fill-width {
-    background-size: 100%;
+  
+    -moz-background-size:cover;
+    -webkit-background-size:cover;
+    background-size:cover;
 }
 
 body section article {
