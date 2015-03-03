@@ -569,14 +569,6 @@ blueprint.initInnerWalls = function() {
     blueprint.addPart(blueprint.house.x + 300, blueprint.house.y + 50, 0);
     blueprint.addPart(blueprint.house.x + 300, blueprint.house.y + 300, 0);
     
-           /* 
-            {
-                width: blueprint.PartWidths[1],
-                offset:  blueprint.house.y - (blueprint.PartWidths[1] / 2),
-                type: 0
-            }
-        
-*/
     blueprint.walls.push({
         angle: blueprint.HORIZONTAL,
         pos: blueprint.house.y + 200,
