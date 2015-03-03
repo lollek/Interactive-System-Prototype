@@ -1,14 +1,19 @@
 html, body {
     margin: 0;
     padding: 0;
-    background-color: #FF0000;
+    background-color: #4288E9;
 }
 
 body section {
     padding: 20px 0;
     width: 100%;
     text-align: center;
-    background-image: url("../img/family-House.jpg");
+    background: url("../img/family-House.jpg") no-repeat;
+    background-size: auto 100%;
+}
+
+body .bg-fill-width {
+    background-size: 100%;
 }
 
 body section article {
@@ -66,6 +71,8 @@ article input {
 
 .radio_buttons article input {
     float: left;
+    margin-left: 10%;
+    margin-top: 2.5%;
 }
 
 .right_column {
@@ -88,12 +95,18 @@ aside input[type="range"] {
     float: left;
 }
 
+.radio_buttons article p {
+    display: inline;
+    margin-left: -45%;
+}
+
 .sliders .left_column {
     margin-top: 3%;
     width: 25%;
 }
 
 h2 {
+    color: #666;
     font-size: 18px;
 }
 
@@ -159,6 +172,10 @@ section section article img {
     height: 183px;
 }
 
-section section article p {
-    color: #666666;
+p {
+    color: #666;
+}
+
+footer p {
+    color: #FFF;
 }
