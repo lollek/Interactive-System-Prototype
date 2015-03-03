@@ -29,6 +29,8 @@ blueprint.VERTICAL = 1;
 
 blueprint.PartWidths = [50, 50]; // Index 0 == DOOR as DOOR == 0 ^
 
+blueprint.undoStack = [];
+
 blueprint.checkClosestWall = function(x, y) {
   var isInHouseX = false;
   var isInHouseY = false;
@@ -230,6 +232,8 @@ blueprint.addWall = function(type) {
     case blueprint.HORIZONTAL: pos = blueprint.house.y; break;
   }
 
+  blueprint.saveState(); //Push state of walls to undoStack
+
   blueprint.walls.push({
     angle: type,
     pos: pos,
@@ -241,6 +245,8 @@ blueprint.addPart = function(x, y, partType) {
   blueprint.checkClosestWall(x, y);
 
   if (blueprint.closestWall !== undefined) {
+    blueprint.saveState(); //Push state of walls to undoStack
+      
     if (blueprint.closestWall.angle == blueprint.VERTICAL) {
       blueprint.closestWall.room.parts.push({
         width: blueprint.PartWidths[partType],
@@ -258,7 +264,7 @@ blueprint.addPart = function(x, y, partType) {
   }
 };
 
-blueprint.useToolClick = function(x, y, toolName) {
+blueprint.useToolClick = function(x, y, toolName) {  
   switch (toolName) {
     case "door":
       blueprint.addPart(x, y, 0);
@@ -266,7 +272,7 @@ blueprint.useToolClick = function(x, y, toolName) {
     case "window":
       blueprint.addPart(x, y, 1);
       break;
-  }
+  }  
   toolbox.selectedTool = undefined;
 };
 
@@ -560,6 +566,21 @@ blueprint.resetView = function() {
   blueprint.context.strokeStyle = "white";
   blueprint.context.lineWidth = 1;
   blueprint.context.stroke();
+};
+
+blueprint.saveState = function() {//Call before things are added
+  console.log("saveState() " + JSON.stringify(blueprint.walls));
+  blueprint.undoStack.push(JSON.stringify(blueprint.walls));
+};
+
+blueprint.loadState = function() {//Resets the state of walls to previous save
+  var wallsJson = blueprint.undoStack.pop();
+  console.log("loadState() " + wallsJson);
+
+  if(wallsJson) {
+    blueprint.walls = JSON.parse(wallsJson);
+  }
+  blueprint.resetView();
 };
 
 blueprint.init = function() {
