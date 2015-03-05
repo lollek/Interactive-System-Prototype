@@ -11,7 +11,10 @@ blueprint.closestWall = undefined;
 
 blueprint.isMovingWall = false;
 blueprint.isMovingPart = false;
+
 blueprint.HIGHLIGHT_OFFSET = 50;
+blueprint.markedWall = undefined;
+blueprint.markedPartIndex = undefined;
 
 blueprint.INNERWALL = 0;
 blueprint.OUTERWALL = 1;
@@ -27,7 +30,11 @@ blueprint.WINDOW = 1;
 blueprint.HORIZONTAL = 0;
 blueprint.VERTICAL = 1;
 
-blueprint.PartWidths = [50, 50]; // Index 0 == DOOR as DOOR == 0 ^
+// Will modify size of all objects, 
+blueprint.PIXELS_PER_METER = 50;
+
+// Assign in meters (will be * pixels_per_meter)
+blueprint.PartWidths = [1, 1]; // Index 0 == DOOR as blueprint.DOOR == 0 ^
 
 blueprint.checkClosestWall = function(x, y) {
   var isInHouseX = false;
@@ -117,11 +124,7 @@ blueprint.mouseMoveEventFindClosestWall = function(x, y) {
     blueprint.resetView();
     blueprint.closestWall = undefined;
   }
-
   blueprint.checkClosestWall(x, y);
-  if (blueprint.closestWall !== undefined) {
-    blueprint.highlightWall(blueprint.closestWall);
-  }
 };
 
 blueprint.moveWallOuter = function(x, y) {
@@ -243,14 +246,14 @@ blueprint.addPart = function(x, y, partType) {
   if (blueprint.closestWall !== undefined) {
     if (blueprint.closestWall.angle == blueprint.VERTICAL) {
       blueprint.closestWall.room.parts.push({
-        width: blueprint.PartWidths[partType],
-        offset: y - blueprint.house.y - (blueprint.PartWidths[partType] / 2),
+        width: blueprint.PartWidths[partType] * blueprint.PIXELS_PER_METER,
+        offset: y - blueprint.house.y - ((blueprint.PartWidths[partType] * blueprint.PIXELS_PER_METER) / 2),
         type: partType
       });
     } else if (blueprint.closestWall.angle == blueprint.HORIZONTAL) {
       blueprint.closestWall.room.parts.push({
-        width: blueprint.PartWidths[partType],
-        offset: x - blueprint.house.x - (blueprint.PartWidths[partType] / 2),
+        width: blueprint.PartWidths[partType] * blueprint.PIXELS_PER_METER,
+        offset: x - blueprint.house.x - ((blueprint.PartWidths[partType] * blueprint.PIXELS_PER_METER) / 2),
         type: partType
       });
     }
@@ -295,8 +298,22 @@ blueprint.mouseDownEvent = function(event) {
     blueprint.useToolClick(x, y, toolbox.selectedTool);
 
   } else if (blueprint.closestWall !== undefined) {
-    var room = blueprint.closestWall.room;
+    var room = blueprint.closestWall.room; // The wall...
+    var isWallUnmarking = false;
     blueprint.isMovingWall = true;
+
+    // Mark the wall / Unmark if wall already marked / Mark this wall, unmark last
+    if(blueprint.markedWall !== undefined) {
+      if(blueprint.markedWall === room) {
+        isWallUnmarking = true;
+      } else {
+        blueprint.markedWall = room;
+        blueprint.markedPartIndex = undefined; // Becouse don't want both wall and part to be marked. (When a wall is what we want)
+      }
+    } else {
+      blueprint.markedWall = room;
+      blueprint.markedPartIndex = undefined; // Becouse don't want both wall and part to be marked. (When a wall is what we want)
+    }
 
     for (var i in room.parts) {
       var part_x;
@@ -314,16 +331,45 @@ blueprint.mouseDownEvent = function(event) {
       part_y = Math.abs(part_y - y);
 
       if (part_x <= blueprint.HIGHLIGHT_OFFSET && part_y <= blueprint.HIGHLIGHT_OFFSET) {
+
+        // Mark the part / Unmark if part already marked / Mark this part, unmark last
+        if(blueprint.markedPartIndex !== undefined) {
+          if(blueprint.markedPartIndex == i) {
+            blueprint.markedPartIndex = undefined;
+            blueprint.markedWall = undefined;
+          } else {
+            blueprint.markedPartIndex = i;
+          }
+        } else {
+          blueprint.markedPartIndex = i;
+        }
+
+        isWallUnmarking = false;
+
+
         blueprint.isMovingWall = false;
         blueprint.isMovingPart = true;
-        blueprint.closestWall.movingPartIndex = i;
+        blueprint.closestWall.movingPartIndex = i; // TODO Change ".movingPartIndex" to ".activePartIndex" as it will be used for highlights aswell
         break;
+      }
+    }
+
+    if(isWallUnmarking) {
+      // Switch from marked part to marked wall (When part belongs to this wall)
+      if(blueprint.markedPartIndex !== undefined) {
+        blueprint.markedPartIndex = undefined;
+      } else {
+        blueprint.markedWall = undefined;
       }
     }
 
     if (blueprint.isMovingWall) {
       blueprint.moveWall(x, y);
     }
+    console.log("Marked wall (down): " + blueprint.markedWall);
+    console.log("marked part (down): " + blueprint.markedPartIndex);
+
+    lueprint.resetView();
   }
 };
 
@@ -341,6 +387,10 @@ blueprint.mouseUpEvent = function(event) {
             && !(isBetween(wall.pos, blueprint.house.x, blueprint.house.x + blueprint.house.width)))
           || (wall.angle == blueprint.HORIZONTAL
             && !(isBetween(wall.pos, blueprint.house.y, blueprint.house.y + blueprint.house.height)))) {
+        if(blueprint.markedWall == blueprint.walls[i]) {
+          blueprint.markedWall = undefined;
+          blueprint.markedPartIndex = undefined;
+        }
         blueprint.walls.splice(i,1);
         blueprint.resetView();
       }
@@ -356,64 +406,164 @@ blueprint.mouseUpEvent = function(event) {
          && !isBetween(room.parts[i].offset, 0, blueprint.house.height))
         ||(room.angle == blueprint.HORIZONTAL
          && !isBetween(room.parts[i].offset, 0, blueprint.house.width))) {
+      if(blueprint.markedWall == room && blueprint.markedPartIndex == i) {
+        blueprint.markedPartIndex = undefined;
+      }
       room.parts.splice(i, 1);
       blueprint.resetView();
     }
   }
 };
 
-blueprint.highlightWall = function(room) {
+blueprint.tossInTrash = function() {
+  if(blueprint.markedWall !== undefined) {
+    var wallIndex = 0;
+    for(var i in blueprint.walls) {
+      if(blueprint.walls[i] === blueprint.markedWall) {
+        wallIndex = i;
+        break;
+      }
+    }
+    if(blueprint.markedPartIndex !== undefined) {
+      console.log("Marked Part index: " + blueprint.markedPartIndex);
+      blueprint.walls[wallIndex].parts.splice(blueprint.markedPartIndex, 1);
+      blueprint.markedPartIndex = undefined;
+      blueprint.markedWall = undefined;
+    } else {
+      blueprint.walls.splice(wallIndex, 1);
+      blueprint.markedWall = undefined;
+    }
+  } // Else do nothing, becouse nothing marked. Warning message? (Nothing marked) TODO
+  console.log("Marked wall (toss): " + blueprint.markedWall);
+  console.log("marked part (toss): " + blueprint.markedPartIndex);
+  blueprint.resetView();
+};
+
+blueprint.highlightWall = function() {
+  var wall = blueprint.markedWall;
+
+  console.log("In HighlightWall, wall: " + wall.pos);
+
   blueprint.context.beginPath();
   blueprint.context.strokeStyle = "yellow";
   blueprint.context.lineWidth = 3;
 
-  var x = 0;
-  var y = 0;
-  var width = 0;
-  var height = 0;
+  if (wall.angle == blueprint.VERTICAL) {
+    blueprint.context.moveTo(wall.pos, blueprint.house.y);
 
-  if (room.type == blueprint.INNERWALL) {
-    x = blueprint.house.x;
-    y = blueprint.house.y;
+    wall.parts.sort(function(a, b) {
+      return a.offset - b.offset;
+    });
 
-    switch (room.angle) {
-      case blueprint.VERTICAL:
-        x = room.room.pos;
-        height = blueprint.house.height;
-        break;
-      case blueprint.HORIZONTAL:
-        y = room.room.pos;
-        width = blueprint.house.width;
-        break;
+    for(var i in wall.parts) {
+      blueprint.context.lineTo(wall.pos, //Line to part
+          blueprint.house.y +
+          wall.parts[i].offset);
+
+      blueprint.context.moveTo(wall.pos, //Skip to end of part
+          blueprint.house.y +
+          wall.parts[i].offset +
+          wall.parts[i].width);
+
     }
-    blueprint.context.moveTo(x, y);
-    blueprint.context.lineTo(x + width, y + height);
+    blueprint.context.lineTo(wall.pos, blueprint.house.y + blueprint.house.height);
+  } else if (wall.angle == blueprint.HORIZONTAL) {
+    blueprint.context.moveTo(blueprint.house.x, wall.pos);
 
-  } else if (room.type == blueprint.OUTERWALL) {
-    x = room.room.x;
-    y = room.room.y;
-    width = room.room.width;
-    height = room.room.height;
+    wall.parts.sort(function(a, b) {
+      return a.offset - b.offset;
+    });
 
-    switch (room.angle) {
-      case blueprint.TOP:
-        blueprint.context.moveTo(x, y);
-        blueprint.context.lineTo(x + width, y);
-        break;
-      case blueprint.LEFT:
-        blueprint.context.moveTo(x, y);
-        blueprint.context.lineTo(x, y + height);
-        break;
-      case blueprint.BOTTOM:
-        blueprint.context.moveTo(x, y + height);
-        blueprint.context.lineTo(x + width, y + height);
-        break;
-      case blueprint.RIGHT:
-        blueprint.context.moveTo(x + width, y);
-        blueprint.context.lineTo(x + width, y + height);
-        break;
+    for(var i in wall.parts) {
+      blueprint.context.lineTo(blueprint.house.x + //Line to part
+                               wall.parts[i].offset,
+                               wall.pos);
+
+      blueprint.context.moveTo(blueprint.house.x + //Skip to end of part
+                               wall.parts[i].offset +
+                               wall.parts[i].width,
+                               wall.pos);
+
+    }
+      
+    blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, wall.pos);
+  }
+
+  blueprint.context.closePath();
+  blueprint.context.stroke();
+
+  console.log("Done in highlightWall");
+};
+
+blueprint.highlightPart = function() {
+  var wall = blueprint.markedWall;
+
+  blueprint.context.beginPath();
+  blueprint.context.strokeStyle = "yellow";
+  blueprint.context.lineWidth = 3;
+
+  for(var i in wall.parts) {
+    //Draw the 'part' itself
+    if(i == wall.movingPartIndex || i == blueprint.markedPartIndex) {
+      if(wall.angle == blueprint.VERTICAL) {
+          blueprint.context.moveTo(wall.pos, //Move to start of arc
+                                   blueprint.house.y +
+                                   wall.parts[i].offset +
+                                   wall.parts[i].width);
+      }
+      else if(wall.angle == blueprint.HORIZONTAL) {
+          blueprint.context.moveTo(blueprint.house.x + //Move to start of arc
+                                   wall.parts[i].offset +
+                                   wall.parts[i].width,
+                                   wall.pos);
+      }
+
+      switch(wall.parts[i].type) {
+        case blueprint.DOOR:
+          if(wall.angle == blueprint.VERTICAL) {            
+              blueprint.context.arc(wall.pos, //Draw arc
+                                    blueprint.house.y + wall.parts[i].offset,
+                                    wall.parts[i].width,
+                                    Math.PI / 2,
+                                    Math.PI / 3,
+                                    true); //Clockwise
+              blueprint.context.lineTo(wall.pos, blueprint.house.y + wall.parts[i].offset); //Draw door
+          }
+          else if(wall.angle == blueprint.HORIZONTAL) {
+              blueprint.context.arc(blueprint.house.x + wall.parts[i].offset, //Draw arc
+                                    wall.pos,
+                                    wall.parts[i].width,
+                                    0,
+                                    Math.PI / 5,
+                                    false); //Counter clockwise
+              blueprint.context.lineTo(blueprint.house.x + wall.parts[i].offset, wall.pos); //Draw door
+          }
+          break;
+        case blueprint.WINDOW:
+          if(wall.angle == blueprint.VERTICAL) {
+              blueprint.context.lineTo(wall.pos, blueprint.house.y + wall.parts[i].offset); //Draw window
+          }
+          else if(wall.angle == blueprint.HORIZONTAL) {
+              blueprint.context.lineTo(blueprint.house.x + wall.parts[i].offset, wall.pos); //Draw window
+          }
+          break;
+      }
+
+      if(wall.angle == blueprint.VERTICAL) {
+          blueprint.context.moveTo(wall.pos, //Skip to end of part
+                                   blueprint.house.y +
+                                   wall.parts[i].offset +
+                                   wall.parts[i].width);
+      }
+      else if(wall.angle == blueprint.HORIZONTAL) {
+           blueprint.context.moveTo(blueprint.house.x + //Skip to end of part
+                                    wall.parts[i].offset +
+                                    wall.parts[i].width,
+                                    wall.pos);
+      }
     }
   }
+
   blueprint.context.closePath();
   blueprint.context.stroke();
 };
@@ -489,18 +639,59 @@ blueprint.drawWall = function(wall) {
       return a.offset - b.offset;
     });
 
-    for(var i in wall.parts) {
-      blueprint.context.lineTo(wall.pos, //Line to part
-          blueprint.house.y +
-          wall.parts[i].offset);
+    var isOut = false;
+    var topOut = false;
+    var botOut = false;
 
-      blueprint.context.moveTo(wall.pos, //Skip to end of part
+    for(var i in wall.parts) {
+      // Check if part is outside of house, then don't draw to it.
+      if(wall.parts[i].offset + blueprint.house.y > blueprint.house.y + blueprint.house.height) {
+        // Top part out of bounds DOWN aka Whole part out.
+        blueprint.context.lineTo(wall.pos, //Line to part
+          blueprint.house.y +
+          blueprint.house.height);
+        isOut = true;
+      } else if(wall.parts[i].offset + blueprint.house.y < blueprint.house.y) {
+        // Top part out of bounds UP
+        blueprint.context.moveTo(wall.pos, //Skip to end of part
           blueprint.house.y +
           wall.parts[i].offset +
           wall.parts[i].width);
+        topOut = true;
+      } else {
+        blueprint.context.lineTo(wall.pos, //Line to part
+          blueprint.house.y +
+          wall.parts[i].offset);
+      }
 
+
+      if(wall.parts[i].offset + wall.parts[i].width + blueprint.house.y < blueprint.house.y) {
+        // Lower part out of bounds UP aka Whole part out.
+        blueprint.context.moveTo(wall.pos, //Skip to start of house.
+          blueprint.house.y);
+        isOut = true;
+      } else if(wall.parts[i].offset + wall.parts[i].width + blueprint.house.y > blueprint.house.y + blueprint.house.height) {
+        // Lower part out of bounds DOWN
+        blueprint.context.moveTo(wall.pos, //Skip to end of part
+          blueprint.house.y +
+          wall.parts[i].offset +
+          wall.parts[i].width);
+        botOut = true;
+      } else {
+        blueprint.context.moveTo(wall.pos, //Skip to end of part
+          blueprint.house.y +
+          wall.parts[i].offset +
+          wall.parts[i].width);
+      }
     }
-    blueprint.context.lineTo(wall.pos, blueprint.house.y + blueprint.house.height);
+
+    if(topOut) {
+      blueprint.context.lineTo(wall.pos, blueprint.house.y + blueprint.house.height);
+    } else if(botOut) {
+    } else {
+      blueprint.context.lineTo(wall.pos, blueprint.house.y + blueprint.house.height);
+    }
+
   } else if (wall.angle == blueprint.HORIZONTAL) {
     blueprint.context.moveTo(blueprint.house.x, wall.pos);
 
@@ -508,36 +699,120 @@ blueprint.drawWall = function(wall) {
       return a.offset - b.offset;
     });
 
+    var isOut = false;
+    var leftOut = false;
+    var rightOut = false;
+
     for(var i in wall.parts) {
-      blueprint.context.lineTo(blueprint.house.x + //Line to part
-                               wall.parts[i].offset,
-                               wall.pos);
+      // Check if part is outside of house, then don't draw to it.
+      if(wall.parts[i].offset + blueprint.house.x > blueprint.house.x + blueprint.house.width) {
+        // Left part out of bounds RIGHT aka Whole part out.
+        blueprint.context.lineTo(blueprint.house.x +
+          blueprint.house.width, 
+          wall.pos);
+        isOut = true;
+      } else if(wall.parts[i].offset + blueprint.house.x < blueprint.house.x) {
+        // Left part out of bounds LEFT
+        blueprint.context.moveTo(blueprint.house.x +
+          wall.parts[i].offset +
+          wall.parts[i].width, 
+          wall.pos);
+        leftOut = true;
+      } else {
+        blueprint.context.lineTo(blueprint.house.x +
+          wall.parts[i].offset, 
+          wall.pos);
+      }
 
-      blueprint.context.moveTo(blueprint.house.x + //Skip to end of part
-                               wall.parts[i].offset +
-                               wall.parts[i].width,
-                               wall.pos);
 
+      if(wall.parts[i].offset + wall.parts[i].width + blueprint.house.x < blueprint.house.x) {
+        // Right part out of bounds LEFT aka Whole part out.
+        blueprint.context.moveTo(blueprint.house.x,
+          wall.pos);
+        isOut = true;
+      } else if(wall.parts[i].offset + wall.parts[i].width + blueprint.house.x > blueprint.house.x + blueprint.house.width) {
+        // Right part out of bounds RIGHT
+        blueprint.context.moveTo(blueprint.house.x +
+          wall.parts[i].offset +
+          wall.parts[i].width,
+          wall.pos);
+        rightOut = true;
+      } else {
+        blueprint.context.moveTo(blueprint.house.x +
+          wall.parts[i].offset +
+          wall.parts[i].width,
+          wall.pos);
+      }
     }
-      
-    blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, wall.pos);
+
+    if(leftOut) {
+      blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, wall.pos);
+    } else if(rightOut) {
+    } else {
+      blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, wall.pos);
+    }
   }
 };
 
 blueprint.resetView = function() {
+
+  //Draw canvas, bg, house sides, walls, and parts.
+
   blueprint.context.clearRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
 
   blueprint.context.fillStyle = "blue";
   blueprint.context.fillRect(0, 0, blueprint.canvas.width, blueprint.canvas.height);
 
+  // Draw house outside walls.
   blueprint.context.beginPath();
-  blueprint.context.strokeStyle = "white";
-
   blueprint.context.moveTo(blueprint.house.x, blueprint.house.y);
   blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, blueprint.house.y);
   blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, blueprint.house.y + blueprint.house.height);
   blueprint.context.lineTo(blueprint.house.x, blueprint.house.y + blueprint.house.height);
   blueprint.context.lineTo(blueprint.house.x, blueprint.house.y);
+
+  // X-axis for measures
+  blueprint.context.moveTo(blueprint.house.x, blueprint.house.y + blueprint.house.height + 40);
+  blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, blueprint.house.y + blueprint.house.height + 40);
+
+  // Draw extra line along outer axis, for marking start
+  blueprint.context.moveTo(blueprint.house.x, blueprint.house.y + blueprint.house.height + 35);
+  blueprint.context.lineTo(blueprint.house.x, blueprint.house.y + blueprint.house.height + 45);
+
+  // Draw extra line along outer axis, for marking end
+  blueprint.context.moveTo(blueprint.house.x + blueprint.house.width, blueprint.house.y + blueprint.house.height + 35);
+  blueprint.context.lineTo(blueprint.house.x + blueprint.house.width, blueprint.house.y + blueprint.house.height + 45);
+
+  blueprint.context.closePath();
+  blueprint.context.strokeStyle = "white";
+  blueprint.context.lineWidth = 2;
+  blueprint.context.stroke();
+
+  blueprint.context.fillStyle = 'white';
+  blueprint.context.font = "bold 12px sans-serif";
+  // X-axis text
+  blueprint.context.fillText(Math.round(blueprint.house.width/blueprint.PIXELS_PER_METER) + " m", blueprint.house.x + blueprint.house.width/2 - 10, blueprint.house.y + blueprint.house.height + 65);
+  // Y-axis text
+  blueprint.context.fillText(Math.round(blueprint.house.height/blueprint.PIXELS_PER_METER) + " m", blueprint.house.x - 80, blueprint.house.y + blueprint.house.height/2 + 5);
+ 
+
+  blueprint.context.beginPath();
+
+  // Y-axis for measures
+  blueprint.context.moveTo(blueprint.house.x - 40, blueprint.house.y);
+  blueprint.context.lineTo(blueprint.house.x - 40, blueprint.house.y + blueprint.house.height);
+
+  // Draw extra line along outer axis, for marking start
+  blueprint.context.moveTo(blueprint.house.x - 35, blueprint.house.y);
+  blueprint.context.lineTo(blueprint.house.x - 45, blueprint.house.y);
+
+  // Draw extra line along outer axis, for marking end
+  blueprint.context.moveTo(blueprint.house.x - 35, blueprint.house.y + blueprint.house.height);
+  blueprint.context.lineTo(blueprint.house.x - 45, blueprint.house.y + blueprint.house.height);
+
+  blueprint.context.moveTo(blueprint.house.x, blueprint.house.y);
+
+
 
   for (var i in blueprint.walls) {
     blueprint.drawWall(blueprint.walls[i]);
@@ -550,7 +825,6 @@ blueprint.resetView = function() {
 
   // Stroke the parts
   blueprint.context.beginPath();
-  blueprint.context.strokeStyle = "white";
 
   for (var i in blueprint.walls) {
     blueprint.drawParts(blueprint.walls[i]);
@@ -560,6 +834,22 @@ blueprint.resetView = function() {
   blueprint.context.strokeStyle = "white";
   blueprint.context.lineWidth = 1;
   blueprint.context.stroke();
+
+  //Draw over highlight parts.
+
+  blueprint.context.beginPath();
+
+  if(blueprint.markedPartIndex !== undefined) {
+    blueprint.highlightPart();
+  }else if(blueprint.markedWall !== undefined) {
+    blueprint.highlightWall();
+  }
+
+  blueprint.context.closePath();
+  blueprint.context.strokeStyle = "yellow";
+  blueprint.context.lineWidth = 3;
+  blueprint.context.stroke();
+
 };
 
 blueprint.init = function() {

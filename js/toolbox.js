@@ -10,5 +10,9 @@ toolbox.selectIcon = function(iconName) {
     case "horizontalWall":
       blueprint.addWall(blueprint.HORIZONTAL);
       break;
+    case "trashBin":
+    	blueprint.tossInTrash();
+      toolbox.selectedTool = undefined;
+    	break;
     }
 };
