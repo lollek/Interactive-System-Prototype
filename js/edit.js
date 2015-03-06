@@ -29,6 +29,10 @@ blueprint.VERTICAL = 1;
 
 blueprint.PartWidths = [50, 50]; // Index 0 == DOOR as DOOR == 0 ^
 
+
+blueprint.undoStack = [];
+blueprint.stackPointer = 0;
+
 blueprint.checkClosestPart = function(x, y) {
   if (blueprint.closestWall === undefined)
     return;
@@ -288,6 +292,27 @@ blueprint.movePart = function(x, y, partType) {
   }
 };
 
+blueprint.useToolMove = function(x, y, toolName) {
+  var isBetween = function(x, min, max) {
+    return (min < x && x < max);
+  }
+
+  if (isBetween(x, blueprint.house.x, blueprint.house.x + blueprint.house.width)
+      && isBetween(y, blueprint.house.y, blueprint.house.y + blueprint.house.height)) {
+    switch (toolName) {
+      case "verticalWall":
+        blueprint.walls[blueprint.walls.length -1].pos = x;
+        break;
+      case "horizontalWall":
+        blueprint.walls[blueprint.walls.length -1].pos = y;
+        break;
+    }
+    blueprint.resetView();
+  }
+};
+
+
+
 blueprint.addWall = function(type) {
   var pos;
   switch (type) {
@@ -300,6 +325,40 @@ blueprint.addWall = function(type) {
     pos: pos,
     parts: []
   });
+};
+
+blueprint.addPart = function(x, y, partType) {
+  blueprint.checkClosestWall(x, y);
+
+  if (blueprint.closestWall !== undefined) {    
+    if (blueprint.closestWall.angle == blueprint.VERTICAL) {
+      blueprint.closestWall.room.parts.push({
+        width: blueprint.PartWidths[partType],
+        offset: y - blueprint.house.y - (blueprint.PartWidths[partType] / 2),
+        type: partType
+      });
+    } else if (blueprint.closestWall.angle == blueprint.HORIZONTAL) {
+      blueprint.closestWall.room.parts.push({
+        width: blueprint.PartWidths[partType],
+        offset: x - blueprint.house.x - (blueprint.PartWidths[partType] / 2),
+        type: partType
+      });
+    }
+    blueprint.resetView();
+  }
+};
+
+blueprint.useToolClick = function(x, y, toolName) {  
+  switch (toolName) {
+    case "door":
+      blueprint.addPart(x, y, 0);
+      break;
+    case "window":
+      blueprint.addPart(x, y, 1);
+      break;
+  }
+  blueprint.saveState(); //Save state when added object
+  toolbox.selectedTool = undefined;
 };
 
 blueprint.mouseMoveEvent = function(event) {
@@ -341,8 +400,8 @@ blueprint.mouseUpEvent = function(event) {
     return (min < x && x < max);
   }
 
-  if (blueprint.isMovingWall) {
-    blueprint.isMovingWall = false;
+  if (blueprint.isMovingWall) {    
+    blueprint.isMovingWall = false;    
 
     for (var i in blueprint.walls) {
       var wall = blueprint.walls[i];
@@ -354,6 +413,7 @@ blueprint.mouseUpEvent = function(event) {
         blueprint.resetView();
       }
     }
+    blueprint.saveState(); //Save state of walls when done moving wall
 
   } else if (blueprint.isMovingPart) {
     var wall = blueprint.closestWall;
@@ -368,6 +428,7 @@ blueprint.mouseUpEvent = function(event) {
       room.parts.splice(i, 1);
       blueprint.resetView();
     }
+    blueprint.saveState(); //Save state of walls when done moving part
   }
 };
 
@@ -568,7 +629,6 @@ blueprint.resetView = function() {
   blueprint.context.stroke();
 };
 
-
 blueprint.initInnerWalls = function() {
   blueprint.walls.push({
     angle: blueprint.VERTICAL,
@@ -649,6 +709,48 @@ blueprint.onDragOverEvent = function(event) {
       blueprint.movePart(x, y, partType);
       break;
   }
+
+blueprint.saveState = function() {//Call before things are added or moved
+  if(blueprint.undoStack[blueprint.stackPointer]) {
+      blueprint.stackPointer += 1;
+  }
+    
+  blueprint.undoStack[blueprint.stackPointer] = (JSON.stringify(
+      {"walls": blueprint.walls, "house": blueprint.house}));
+    
+  blueprint.undoStack = blueprint.undoStack.slice(0, blueprint.stackPointer + 1);
+};
+
+blueprint.loadState = function() {//Resets the state of walls to previous save    
+  if(!blueprint.undoStack[blueprint.stackPointer]) {
+    blueprint.stackPointer -= 1;
+  }
+
+  if(blueprint.stackPointer > 0) {
+    blueprint.stackPointer -= 1;
+  }
+    
+  var stateJson = blueprint.undoStack[blueprint.stackPointer];
+  
+  if(stateJson) {
+     var state = JSON.parse(stateJson);
+     blueprint.walls = state.walls;
+     blueprint.house = state.house;
+  }
+  blueprint.resetView();
+};
+
+blueprint.forwardState = function() {//Call to return to state before undo
+  var stateJson = blueprint.undoStack[blueprint.stackPointer + 1];
+  
+  if(stateJson) {
+    blueprint.stackPointer += 1;
+    var state = JSON.parse(stateJson);
+    blueprint.walls = state.walls;
+    blueprint.house = state.house;    
+  }
+  
+  blueprint.resetView();
 };
 
 blueprint.init = function() {
@@ -674,4 +776,5 @@ blueprint.init = function() {
   blueprint.initInnerWalls();
 
   blueprint.resetView();
+  blueprint.saveState();
 };
