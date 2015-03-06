@@ -17,11 +17,11 @@
   
   <body>
 
-  <header onclick="goToFrontpage()">
+  <header>
       <h1>Drömhus</h1>
-      <img src="../img/happy-guy.jpg">
+      <img id="happy-guy" src="../img/happy-guy.jpg" onload="CompanionRespone('hej')">
       <img id="talk-bubbel" src="../img/talk-bubble.png">
-      <p id="companion-msg"></p>
+      <p id="companion-msg" onclick="goToFrontpage()"></p>
   </header>
 
 
