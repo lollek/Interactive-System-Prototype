@@ -38,3 +38,6 @@ function saveHouse(){
     window.alert("Ditt drömhus är sparat");
 }
 
+function orderHouse(){
+    window.alert("Ditt hus är nu beställt och väntas vara färdgt 20 december 2015!");
+}
