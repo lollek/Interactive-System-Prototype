@@ -452,7 +452,7 @@ blueprint.mouseUpEvent = function(event) {
 
   var isBetween = function(x, min, max) {
     return (min < x && x < max);
-  }
+  };
 
   if (blueprint.isMovingWall) {
     blueprint.isMovingWall = false;
@@ -469,6 +469,19 @@ blueprint.mouseUpEvent = function(event) {
         }
         blueprint.walls.splice(i,1);
         blueprint.resetView();
+      }
+      for (var k in wall.parts) {
+        //console.log("Wall part pos: " + wall.parts[k].offset + "   " + wall.parts.length);
+        if ((wall.angle == blueprint.VERTICAL && (wall.parts[k].offset > blueprint.house.height)
+          || 
+          (wall.angle == blueprint.HORIZONTAL && (wall.parts[k].offset > blueprint.house.width)))) {
+          if(blueprint.markedWall == blueprint.walls[i] && blueprint.markedPartIndex == wall.parts[k]) {
+            blueprint.markedWall = undefined;
+            blueprint.markedPartIndex = undefined;
+          }
+          blueprint.walls[i].parts.splice(k,1);
+          blueprint.resetView();
+        }
       }
     }
     blueprint.saveState(); //Save state of walls when done moving wall
