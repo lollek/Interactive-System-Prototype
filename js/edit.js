@@ -31,7 +31,7 @@ blueprint.HORIZONTAL = 0;
 blueprint.VERTICAL = 1;
 
 // Will modify size of all objects, 
-blueprint.PIXELS_PER_METER = 50;
+blueprint.PIXELS_PER_METER = 32;
 
 // Assign in meters (will be * pixels_per_meter)
 blueprint.PartWidths = [1, 1]; // Index 0 == DOOR as blueprint.DOOR == 0 ^
