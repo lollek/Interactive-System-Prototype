@@ -50,6 +50,7 @@ body section .order {
     font-size: 22px;
 
     width: 80%;
+
 }
 
 body section aside {
@@ -174,6 +175,10 @@ section section article img {
 p {
     font-size: 18px;
     color: #666;
+}
+
+footer {
+    vertical-align: bottom;
 }
 
 footer p {

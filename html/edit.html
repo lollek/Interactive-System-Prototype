@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
   <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
@@ -11,21 +10,21 @@
 
     <script src="/js/toolbox.js"></script>
     <script src="/js/edit.js"></script>
-    
+    <script src="/js/companion.js"></script>
     <meta charset="UTF-8">
     <title> Edit </title>
   </head>
   
   <body>
-    
-    <header onclick="goToFrontpage()">
+  <header>
       <h1>DRÖMHUS</h1>
-    </header>
-    
-    <nav>
-      <a href="/html/my_page.html"><button>Start</button></a>
-      <button>Dela</button>
-      <button>Spara</button>
+      <img id="happy-guy" src="../img/happy-guy.jpg" onload="CompanionRespone('hej')">
+      <img id="talk-bubbel" src="../img/talk-bubble.png">
+      <p id="companion-msg" onclick="goToFrontpage()"></p>
+  </header>
+  <nav>
+      <button onclick="shareHouse()">Dela</button>
+      <button onclick="saveHouse()">Spara</button>
       <button onclick="toolbox.selectIcon('trashBin')">TrashBin</button>
       <a href="/html/order.html"><button class="bestall" id="rightmenu">Bestall</button></a>
     </nav>

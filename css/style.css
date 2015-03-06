@@ -100,6 +100,7 @@ section h2 {
 #EditView {
     height: 80%;
     background-image: url("../img/bg-blueprint.png");
+    z-index: 5;
 }
 
 #total {
@@ -128,4 +129,42 @@ section h2 {
 
 #WindowsExpBtn {
     top: 200px;
+}
+
+
+
+header #talk-bubbel {
+    display: inline-block;
+    visibility: hidden;
+    position: absolute;
+    top: 10px;
+    right: 125px;
+    float: right;
+    z-index: 2;
+    width: 200px;
+}
+
+header #happy-guy{
+    border: 5px solid black;
+}
+header img {
+    display: inline-block;
+    position: absolute;
+    right: 250px;
+    top: 50px;
+    float: right;
+    z-index: 2;
+}
+
+header #companion-msg {
+    display: inline-block;
+    position: absolute;
+    top: 35px;
+    right: 140px;
+    float: right;
+    width: 150px;
+    color: black;
+    z-index: 3;
+    font-size: 12px;
+
 }

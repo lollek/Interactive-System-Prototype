@@ -1,0 +1,12 @@
+{
+  "add_wall" : ["Väggar är bra att ha", "det fulaste jag har sett!"],
+  "remove_wall": ["Mindre väggar ger ett luftigare hus"],
+  "add_window" : ["Fönster gör rum ljusare", "många fönster ger mer insyn"],
+  "remove_window": ["Utan fönster blir det mörkt"],
+  "add_door" : ["Dörrar tar bort utrymme för tavlor"],
+  "remove_door" : ["hellre en dörr för mycket än en för lite"],
+  "move_door": ["Placera inte dörrar för nära vägghörn"],
+  "hej": ["Hej! Här kan du bygga ditt drömhus och jag är här för att hjälpa till!"]
+
+
+}
