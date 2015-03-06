@@ -26,7 +26,6 @@
       <a href="/html/my_page.html"><button>Start</button></a>
       <button onclick="shareHouse()">Dela</button>
       <button onclick="saveHouse()">Spara</button>
-      <button onclick="toolbox.selectIcon('trashBin')">TrashBin</button>
       <a href="/html/order.html"><button class="bestall" id="rightmenu">Bestall</button></a>
     </nav>
     <section id="EditView">
@@ -35,6 +34,7 @@
       <div id="EditBtn">
         <p><button onclick="blueprint.loadState();">Ångra</button></p>
         <p><button onclick="blueprint.forwardState();">Gör igen</button></p>
+        <p><button id="DelBtn" onclick="toolbox.drag('trashBin')">Ta bort</button></p>
       </div>
       <div class="EditExpandButton" id="WallsExpBtn">
         <div class='circle-container'>

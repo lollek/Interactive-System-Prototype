@@ -114,9 +114,31 @@ section h2 {
 }
 
 #EditBtn {
-    top: 350px;
+    bottom: 20px;
     right: 0px;
     position: absolute;
+}
+
+#EditBtn button { 
+    display: block;
+    border-radius: 10px;
+    border: none;
+    background-color: #3177D8;
+
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 16px;
+    padding: 10px;
+
+    cursor: pointer;
+
+    margin: 4px 1%;
+    float: left;
+}
+
+#EditBtn #DelBtn {
+    background-color: #993333;
+    margin-top: 30px;
 }
 
 #WallsExpBtn {
@@ -130,8 +152,6 @@ section h2 {
 #WindowsExpBtn {
     top: 200px;
 }
-
-
 
 header #talk-bubbel {
     display: inline-block;
@@ -147,6 +167,7 @@ header #talk-bubbel {
 header #happy-guy{
     border: 5px solid black;
 }
+
 header img {
     display: inline-block;
     position: absolute;
