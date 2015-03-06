@@ -299,7 +299,7 @@ blueprint.movePart = function(x, y, partType) {
     var doReset = false;
 
     if (oldWall !== undefined && oldRoom.parts !== undefined) {
-      oldRoom.parts.pop();
+      oldRoom.parts.splice(oldWall.movingPartIndex, 1);
       doReset = true;
     }
 
