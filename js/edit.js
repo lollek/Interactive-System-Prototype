@@ -709,6 +709,7 @@ blueprint.onDragOverEvent = function(event) {
       blueprint.movePart(x, y, partType);
       break;
   }
+};
 
 blueprint.saveState = function() {//Call before things are added or moved
   if(blueprint.undoStack[blueprint.stackPointer]) {
