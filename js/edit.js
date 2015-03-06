@@ -36,7 +36,6 @@ blueprint.PIXELS_PER_METER = 50;
 // Assign in meters (will be * pixels_per_meter)
 blueprint.PartWidths = [1, 1]; // Index 0 == DOOR as blueprint.DOOR == 0 ^
 
-
 blueprint.undoStack = [];
 blueprint.stackPointer = 0;
 
@@ -643,7 +642,6 @@ blueprint.highlightPart = function() {
 };
 
 blueprint.drawParts = function(wall) {
-
   for(var i in wall.parts) {
     //Draw the 'part' itself
     if(wall.angle == blueprint.VERTICAL) {
@@ -966,6 +964,7 @@ blueprint.initInnerWalls = function() {
 blueprint.onDropEvent = function(event) {
   toolbox.currentlyDragging = undefined;
   blueprint.isMovingPart = false;
+  blueprint.saveState();
 };
 
 blueprint.onDragOverEvent = function(event) {
@@ -1015,7 +1014,10 @@ blueprint.saveState = function() {//Call before things are added or moved
   blueprint.undoStack = blueprint.undoStack.slice(0, blueprint.stackPointer + 1);
 };
 
-blueprint.loadState = function() {//Resets the state of walls to previous save    
+blueprint.loadState = function() {//Resets the state of walls to previous save
+  blueprint.markedWall = undefined;
+  blueprint.markedPartIndex = undefined;
+    
   if(!blueprint.undoStack[blueprint.stackPointer]) {
     blueprint.stackPointer -= 1;
   }
