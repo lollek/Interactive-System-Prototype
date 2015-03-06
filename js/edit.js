@@ -514,6 +514,7 @@ blueprint.tossInTrash = function() {
       blueprint.markedWall = undefined;
     }
   } // Else do nothing, becouse nothing marked. Warning message? (Nothing marked) TODO
+  blueprint.saveState();
   blueprint.resetView();
 };
 
