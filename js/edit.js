@@ -417,14 +417,7 @@ blueprint.mouseMoveEvent = function(event) {
     blueprint.moveWall(x, y);
 
   } else if (blueprint.isMovingPart) {
-    var partType = undefined;
-
-    if (blueprint.closestWall !== undefined
-        && blueprint.closestWall.movingPartIndex !== undefined) {
-      var i = blueprint.closestWall.movingPartIndex;
-      partType = blueprint.closestWall.room.parts[i].type;
-    }
-    blueprint.movePart(x, y, partType);
+    blueprint.movePart(x, y, toolbox.currentlyDragging);
 
   } else {
     blueprint.mouseMoveEventFindClosestWall(x, y);
@@ -438,20 +431,27 @@ blueprint.mouseDownEvent = function(event) {
 
   blueprint.checkClosestPart(x, y);
   if (blueprint.closestWall !== undefined) {
-    if (blueprint.closestWall.movingPartIndex !== undefined)
+    if (blueprint.closestWall.movingPartIndex !== undefined) {
       blueprint.isMovingPart = true;
-    else
+      if (blueprint.closestWall.room.parts !== undefined) {
+        var i = blueprint.closestWall.movingPartIndex;
+        toolbox.currentlyDragging = blueprint.closestWall.room.parts[i].type;
+      }
+    } else {
       blueprint.isMovingWall = true;
+    }
   }
 };
 
 blueprint.mouseUpEvent = function(event) {
+  toolbox.currentlyDragging = undefined;
+
   var isBetween = function(x, min, max) {
     return (min < x && x < max);
   }
 
-  if (blueprint.isMovingWall) {    
-    blueprint.isMovingWall = false;    
+  if (blueprint.isMovingWall) {
+    blueprint.isMovingWall = false;
 
     for (var i in blueprint.walls) {
       var wall = blueprint.walls[i];
