@@ -10,5 +10,9 @@ toolbox.drag = function(icon) {
   case "horizontalWall":
     blueprint.addWall(blueprint.HORIZONTAL);
     break;
+  case "trashBin":
+    blueprint.tossInTrash();
+    toolbox.currentlyDragging = undefined;
+    break;
   }
 };
