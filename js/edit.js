@@ -43,78 +43,73 @@ blueprint.stackPointer = 0;
 blueprint.checkClosestPart = function(x, y) {
   if (toolbox.selectedTool !== undefined) {
     blueprint.useToolClick(x, y, toolbox.selectedTool);
+    return;
+  }
 
-  } else if (blueprint.closestWall !== undefined) {
-    var room = blueprint.closestWall.room; // The wall...
-    var isWallUnmarking = false;
-    blueprint.isMovingWall = true;
+  if (blueprint.closestWall === undefined)
+    return;
 
-    // Mark the wall / Unmark if wall already marked / Mark this wall, unmark last
-    if(blueprint.markedWall !== undefined) {
-      if(blueprint.markedWall === room) {
-        isWallUnmarking = true;
-      } else {
-        blueprint.markedWall = room;
-        blueprint.markedPartIndex = undefined; // Becouse don't want both wall and part to be marked. (When a wall is what we want)
-      }
+  var room = blueprint.closestWall.room;
+  var isWallUnmarking = false;
+
+  if (blueprint.markedWall !== undefined) {
+    if (blueprint.markedWall === room) {
+      isWallUnmarking = true;
     } else {
       blueprint.markedWall = room;
-      blueprint.markedPartIndex = undefined; // Becouse don't want both wall and part to be marked. (When a wall is what we want)
+      blueprint.markedPartIndex = undefined;
+    }
+  } else {
+    blueprint.markedWall = room;
+    blueprint.markedPartIndex = undefined;
+  }
+
+  for (var i in room.parts) {
+    var part_x;
+    var part_y;
+
+    if (room.angle == blueprint.VERTICAL) {
+      part_x = room.pos;
+      part_y = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.y;
+
+    } else if (room.angle == blueprint.HORIZONTAL) {
+      part_x = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.x;
+      part_y = room.pos;
     }
 
-    for (var i in room.parts) {
-      var part_x;
-      var part_y;
+    part_x = Math.abs(part_x - x);
+    part_y = Math.abs(part_y - y);
 
-      if (room.angle == blueprint.VERTICAL) {
-        part_x = room.pos;
-        part_y = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.y;
-      } else if (room.angle == blueprint.HORIZONTAL) {
-        part_x = room.parts[i].offset + room.parts[i].width/2 + blueprint.house.x;
-        part_y = room.pos;
-      }
-
-      part_x = Math.abs(part_x - x);
-      part_y = Math.abs(part_y - y);
-
-      if (part_x <= blueprint.HIGHLIGHT_OFFSET && part_y <= blueprint.HIGHLIGHT_OFFSET) {
-
-        // Mark the part / Unmark if part already marked / Mark this part, unmark last
-        if(blueprint.markedPartIndex !== undefined) {
-          if(blueprint.markedPartIndex == i) {
-            blueprint.markedPartIndex = undefined;
-            blueprint.markedWall = undefined;
-          } else {
-            blueprint.markedPartIndex = i;
-          }
+    if (part_x <= blueprint.HIGHLIGHT_OFFSET
+        && part_y <= blueprint.HIGHLIGHT_OFFSET) {
+      if (blueprint.markedPartIndex !== undefined) {
+        if (blueprint.markedPartIndex == i) {
+          blueprint.markedPartIndex = undefined;
+          blueprint.markedWall = undefined;
         } else {
           blueprint.markedPartIndex = i;
         }
-
-        isWallUnmarking = false;
-
-
-        blueprint.isMovingWall = false;
-        blueprint.isMovingPart = true;
-        blueprint.closestWall.movingPartIndex = i; // TODO Change ".movingPartIndex" to ".activePartIndex" as it will be used for highlights aswell
-        break;
-      }
-    }
-
-    if(isWallUnmarking) {
-      // Switch from marked part to marked wall (When part belongs to this wall)
-      if(blueprint.markedPartIndex !== undefined) {
-        blueprint.markedPartIndex = undefined;
       } else {
-        blueprint.markedWall = undefined;
+        blueprint.markedPartIndex = i;
       }
-    }
 
-    if (blueprint.isMovingWall) {
-      blueprint.moveWall(x, y);
+      isWallUnmarking = false;
+      blueprint.closestWall.movingPartIndex = i;
+      break;
     }
-    blueprint.resetView();
   }
+
+  if(isWallUnmarking) {
+    if(blueprint.markedPartIndex !== undefined) {
+      blueprint.markedPartIndex = undefined;
+    } else {
+      blueprint.markedWall = undefined;
+    }
+  }
+
+  if (blueprint.isMovingWall)
+    blueprint.moveWall(x, y);
+  blueprint.resetView();
 };
 
 blueprint.checkClosestWall = function(x, y) {
@@ -443,6 +438,12 @@ blueprint.mouseDownEvent = function(event) {
   var y = event.clientY - rect.top;
 
   blueprint.checkClosestPart(x, y);
+  if (blueprint.closestWall !== undefined) {
+    if (blueprint.closestWall.movingPartIndex !== undefined)
+      blueprint.isMovingPart = true;
+    else
+      blueprint.isMovingWall = true;
+  }
 };
 
 blueprint.mouseUpEvent = function(event) {
@@ -499,7 +500,6 @@ blueprint.tossInTrash = function() {
       }
     }
     if(blueprint.markedPartIndex !== undefined) {
-      console.log("Marked Part index: " + blueprint.markedPartIndex);
       blueprint.walls[wallIndex].parts.splice(blueprint.markedPartIndex, 1);
       blueprint.markedPartIndex = undefined;
       blueprint.markedWall = undefined;
@@ -508,15 +508,11 @@ blueprint.tossInTrash = function() {
       blueprint.markedWall = undefined;
     }
   } // Else do nothing, becouse nothing marked. Warning message? (Nothing marked) TODO
-  console.log("Marked wall (toss): " + blueprint.markedWall);
-  console.log("marked part (toss): " + blueprint.markedPartIndex);
   blueprint.resetView();
 };
 
 blueprint.highlightWall = function() {
   var wall = blueprint.markedWall;
-
-  console.log("In HighlightWall, wall: " + wall.pos);
 
   blueprint.context.beginPath();
   blueprint.context.strokeStyle = "yellow";
@@ -565,8 +561,6 @@ blueprint.highlightWall = function() {
 
   blueprint.context.closePath();
   blueprint.context.stroke();
-
-  console.log("Done in highlightWall");
 };
 
 blueprint.highlightPart = function() {
