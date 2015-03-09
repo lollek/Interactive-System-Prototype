@@ -31,7 +31,7 @@ blueprint.HORIZONTAL = 0;
 blueprint.VERTICAL = 1;
 
 // Will modify size of all objects, 
-blueprint.PIXELS_PER_METER = 50;
+blueprint.PIXELS_PER_METER = 32;
 
 // Assign in meters (will be * pixels_per_meter)
 blueprint.PartWidths = [1, 1]; // Index 0 == DOOR as blueprint.DOOR == 0 ^
@@ -458,7 +458,6 @@ blueprint.mouseUpEvent = function(event) {
     blueprint.isMovingWall = false;
 
     for (var i = blueprint.walls.length -1; i >= 0 ; i--) {
-      //console.log("New wall: " + i)
       var wall = blueprint.walls[i];
       if ((wall.angle == blueprint.VERTICAL
             && !(isBetween(wall.pos, blueprint.house.x, blueprint.house.x + blueprint.house.width)))
@@ -480,8 +479,6 @@ blueprint.mouseUpEvent = function(event) {
               blueprint.markedWall = undefined;
               blueprint.markedPartIndex = undefined;
             }
-            // for 4
-            // 0,1,2,4,5
             blueprint.walls[i].parts.splice(k,1);
             blueprint.resetView();
           }
