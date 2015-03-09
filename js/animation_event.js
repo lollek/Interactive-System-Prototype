@@ -10,14 +10,16 @@ $(".EditExpandButton").hover(function() {
   curr_button = null;
 
   root.find("a").each(function() {
-    if(!$(this).hasClass("center"))
-    {
+    if(!$(this).hasClass("center")) {
       var degree = (360/(root.find("a").length -1)) * at;
       at += 1;
       $(this).css({
         '-moz-transform': 'rotate(' + degree + 'deg)' + 
         ' translate(' + offset + 'px)' +
         ' rotate(-' + degree + 'deg)'});
+    } else {
+      $(this).css({
+        'opacity': 0});
     }
   });
 }, function() {
@@ -29,12 +31,14 @@ $(".EditExpandButton").hover(function() {
   curr_button = null;
 
   root.find("a").each(function() {
-    if(!$(this).hasClass("center"))
-    {
+    if(!$(this).hasClass("center")) {
       $(this).css({
         '-moz-transform': 'rotate(' + 0 + 'deg)' + 
         ' translate(' + 0 + 'px)' +
         ' rotate(-' + 0 + 'deg)'});
+    } else {
+      $(this).css({
+        'opacity': 1});
     }
   });
 });
@@ -43,12 +47,10 @@ function fix_top_pos_expand() {
   increase_higth = false;
   var nr = 0;
   $("#EditView").find(".EditExpandButton").each(function() {
-    if(increase_higth)
-    {
+    if(increase_higth) {
       $(this).css({'top': (nr*100+100) + 'px'});
     }
-    else if($(this).is(curr_button))
-    {
+    else if($(this).is(curr_button)) {
       increase_higth = true;
     }
     nr += 1;
@@ -59,12 +61,10 @@ function fix_top_pos_deflate() {
   decrease_higth = false;
   var nr = 0;
   $("#EditView").find(".EditExpandButton").each(function() {
-    if(decrease_higth)
-    {
+    if(decrease_higth) {
       $(this).css({'top': (nr*100) + 'px'});
     }
-    else if($(this).is(curr_button))
-    {
+    else if($(this).is(curr_button)) {
       decrease_higth = true;
     }
     nr += 1;

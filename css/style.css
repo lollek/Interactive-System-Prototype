@@ -79,6 +79,11 @@ section h2 {
     transition: transform 0.5s;
 }
 
+.center {
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
 .EditExpandButton {
     position: absolute;
     top: 0px;
