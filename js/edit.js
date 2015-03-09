@@ -31,7 +31,7 @@ blueprint.HORIZONTAL = 0;
 blueprint.VERTICAL = 1;
 
 // Will modify size of all objects, 
-blueprint.PIXELS_PER_METER = 50;
+blueprint.PIXELS_PER_METER = 32;
 
 // Assign in meters (will be * pixels_per_meter)
 blueprint.PartWidths = [1, 1]; // Index 0 == DOOR as blueprint.DOOR == 0 ^
@@ -470,12 +470,12 @@ blueprint.mouseUpEvent = function(event) {
 
   var isBetween = function(x, min, max) {
     return (min < x && x < max);
-  }
+  };
 
   if (blueprint.isMovingWall) {
     blueprint.isMovingWall = false;
 
-    for (var i in blueprint.walls) {
+    for (var i = blueprint.walls.length -1; i >= 0 ; i--) {
       var wall = blueprint.walls[i];
       if ((wall.angle == blueprint.VERTICAL
             && !(isBetween(wall.pos, blueprint.house.x, blueprint.house.x + blueprint.house.width)))
@@ -487,6 +487,20 @@ blueprint.mouseUpEvent = function(event) {
         }
         blueprint.walls.splice(i,1);
         blueprint.resetView();
+      }
+      if(wall.parts.length > 0){
+        for (var k = wall.parts.length -1; k >= 0; k--) {
+          if ((wall.angle == blueprint.VERTICAL && (wall.parts[k].offset > blueprint.house.height)
+            || 
+            (wall.angle == blueprint.HORIZONTAL && (wall.parts[k].offset > blueprint.house.width)))) {
+            if(blueprint.markedWall == blueprint.walls[i] && blueprint.markedPartIndex == wall.parts[k]) {
+              blueprint.markedWall = undefined;
+              blueprint.markedPartIndex = undefined;
+            }
+            blueprint.walls[i].parts.splice(k,1);
+            blueprint.resetView();
+          }
+        }
       }
     }
     blueprint.saveState(); //Save state of walls when done moving wall
