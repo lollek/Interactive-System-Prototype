@@ -31,7 +31,7 @@ blueprint.HORIZONTAL = 0;
 blueprint.VERTICAL = 1;
 
 // Will modify size of all objects, 
-blueprint.PIXELS_PER_METER = 32;
+blueprint.PIXELS_PER_METER = 50;
 
 // Assign in meters (will be * pixels_per_meter)
 blueprint.PartWidths = [1, 1]; // Index 0 == DOOR as blueprint.DOOR == 0 ^
@@ -457,7 +457,8 @@ blueprint.mouseUpEvent = function(event) {
   if (blueprint.isMovingWall) {
     blueprint.isMovingWall = false;
 
-    for (var i in blueprint.walls) {
+    for (var i = blueprint.walls.length -1; i >= 0 ; i--) {
+      //console.log("New wall: " + i)
       var wall = blueprint.walls[i];
       if ((wall.angle == blueprint.VERTICAL
             && !(isBetween(wall.pos, blueprint.house.x, blueprint.house.x + blueprint.house.width)))
@@ -470,17 +471,20 @@ blueprint.mouseUpEvent = function(event) {
         blueprint.walls.splice(i,1);
         blueprint.resetView();
       }
-      for (var k in wall.parts) {
-        //console.log("Wall part pos: " + wall.parts[k].offset + "   " + wall.parts.length);
-        if ((wall.angle == blueprint.VERTICAL && (wall.parts[k].offset > blueprint.house.height)
-          || 
-          (wall.angle == blueprint.HORIZONTAL && (wall.parts[k].offset > blueprint.house.width)))) {
-          if(blueprint.markedWall == blueprint.walls[i] && blueprint.markedPartIndex == wall.parts[k]) {
-            blueprint.markedWall = undefined;
-            blueprint.markedPartIndex = undefined;
+      if(wall.parts.length > 0){
+        for (var k = wall.parts.length -1; k >= 0; k--) {
+          if ((wall.angle == blueprint.VERTICAL && (wall.parts[k].offset > blueprint.house.height)
+            || 
+            (wall.angle == blueprint.HORIZONTAL && (wall.parts[k].offset > blueprint.house.width)))) {
+            if(blueprint.markedWall == blueprint.walls[i] && blueprint.markedPartIndex == wall.parts[k]) {
+              blueprint.markedWall = undefined;
+              blueprint.markedPartIndex = undefined;
+            }
+            // for 4
+            // 0,1,2,4,5
+            blueprint.walls[i].parts.splice(k,1);
+            blueprint.resetView();
           }
-          blueprint.walls[i].parts.splice(k,1);
-          blueprint.resetView();
         }
       }
     }
