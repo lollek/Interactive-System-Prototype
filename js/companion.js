@@ -12,7 +12,7 @@ my_JSON_object = JSON.parse(request.responseText);
 
 
 
-function CompanionRespone(action){
+function CompanionResponse(action){
     //action ~ category
 
     //for clearing all intervals

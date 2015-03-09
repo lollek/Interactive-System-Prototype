@@ -1,7 +1,10 @@
 {
-  "add_wall" : ["Väggar är bra att ha", "det fulaste jag har sett!"],
+  "add_verticalWall" : ["Väggar är bra att ha", "det fulaste jag har sett!"],
+  "add_horizantalWall" : ["Väggar är bra att ha", "det fulaste jag har sett!"],
+  "move_wall" : ["Flytta väggar för att ändra rumstorlek"],
   "remove_wall": ["Mindre väggar ger ett luftigare hus"],
   "add_window" : ["Fönster gör rum ljusare", "många fönster ger mer insyn"],
+  "move_window" : ["många fönster ger mer insyn"],
   "remove_window": ["Utan fönster blir det mörkt"],
   "add_door" : ["Dörrar tar bort utrymme för tavlor"],
   "remove_door" : ["hellre en dörr för mycket än en för lite"],

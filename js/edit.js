@@ -266,6 +266,9 @@ blueprint.moveWallInner = function(x, y) {
 };
 
 blueprint.moveWall = function(x, y) {
+
+  CompanionResponse("move_wall");
+
   if (blueprint.closestWall.type == blueprint.OUTERWALL) {
     blueprint.moveWallOuter(x, y);
   } else if (blueprint.closestWall.type == blueprint.INNERWALL) {
@@ -276,6 +279,21 @@ blueprint.moveWall = function(x, y) {
 blueprint.movePart = function(x, y, partType) {
   var oldWall = blueprint.closestWall;
   var oldRoom = oldWall ? oldWall.room : undefined;
+
+    console.log("part" + partType);
+
+
+
+    switch (partType) {
+        case 0:
+            CompanionResponse("move_door");
+            break;
+        case 1:
+            CompanionResponse("move_window");
+            break;
+        default:
+            break;
+    }
 
   blueprint.closestWall = undefined;
   blueprint.checkClosestWall(x, y);
@@ -344,6 +362,8 @@ blueprint.useToolMove = function(x, y, toolName) {
     return (min < x && x < max);
   }
 
+    CompanionResponse("move_" + toolName);
+
   if (isBetween(x, blueprint.house.x, blueprint.house.x + blueprint.house.width)
       && isBetween(y, blueprint.house.y, blueprint.house.y + blueprint.house.height)) {
     switch (toolName) {
@@ -362,8 +382,6 @@ blueprint.useToolMove = function(x, y, toolName) {
 
 blueprint.addWall = function(type) {
 
-  //reply from companion
-  CompanionRespone("add_wall");
 
   var pos;
   switch (type) {
@@ -1003,10 +1021,16 @@ blueprint.onDragOverEvent = function(event) {
       blueprint.movePart(x, y, partType);
       break;
   }
+
+
+    console.log("current: " + toolbox.currentlyDragging);
+    CompanionResponse("add_" + toolbox.currentlyDragging);
+
 };
 
 blueprint.saveState = function() {//Call before things are added or moved
-  if(blueprint.undoStack[blueprint.stackPointer]) {
+
+    if(blueprint.undoStack[blueprint.stackPointer]) {
       blueprint.stackPointer += 1;
   }
     
